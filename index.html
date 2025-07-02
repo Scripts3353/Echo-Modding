@@ -83,6 +83,16 @@
             height: 300px;
             border-radius: 8px;
         }
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .login-button {
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            border-radius: 9999px;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -91,7 +101,11 @@
     <header class="p-8 text-center relative z-10">
         <h1 class="text-5xl font-bold neon-text mb-2">Echo Modding</h1>
         <p class="text-xl">Site By <span style="color: #800080;">Qstar</span></p>
-        <div id="user-profile" class="absolute top-4 right-4 flex items-center space-x-2"></div>
+        <div class="absolute top-4 right-4 flex items-center space-x-2">
+            <div id="user-profile" class="user-profile"></div>
+            <button id="login-button" class="tab-button login-button neon-text hidden" onclick="loginWithDiscord()">Login with Discord</button>
+            <button id="logout-button" class="tab-button login-button neon-text hidden" onclick="logout()">Logout</button>
+        </div>
     </header>
 
     <nav class="bg-transparent p-6 relative z-10">
@@ -109,10 +123,6 @@
                 <button class="tab-button px-8 py-3 text-lg font-semibold rounded-full" onclick="openTab('admin')">Admin</button>
             </li>
         </ul>
-        <div class="flex justify-center mt-4">
-            <button id="login-button" class="tab-button px-6 py-2 text-lg font-semibold rounded-full" onclick="loginWithDiscord()">Login with Discord</button>
-            <button id="logout-button" class="tab-button px-6 py-2 text-lg font-semibold rounded-full hidden" onclick="logout()">Logout</button>
-        </div>
     </nav>
 
     <main class="flex-grow p-8 relative z-10">
@@ -120,8 +130,7 @@
             <div class="glass-card p-6 rounded-xl">
                 <h2 class="text-4xl font-bold neon-text mb-4">Welcome to Echo Modding</h2>
                 <p class="text-lg mb-4">mhm</p>
-                <div class="mt-6">
-                </div>
+                <div class="mt-6"></div>
             </div>
         </section>
 
@@ -184,7 +193,7 @@
     <script>
         // Discord OAuth2 configuration
         const CLIENT_ID = '1385094110255251466';
-        const REDIRECT_URI = 'https://www.echomodding.org';
+        const REDIRECT_URI = 'https://www.echomodding.org/';
         const ADMIN_ID = '1204549082824310847';
 
         // Redirect to Discord OAuth2 login
@@ -208,14 +217,12 @@
             const urlParams = new URLSearchParams(window.location.search);
             const code = urlParams.get('code');
             if (code) {
-                // Exchange code for access token
                 fetch('https://your-netlify-site.netlify.app/.netlify/functions/callback?code=' + code)
                     .then(response => response.json())
                     .then(data => {
                         if (data.id) {
                             localStorage.setItem('user', JSON.stringify(data));
                             updateUI(data);
-                            // Clear URL params
                             window.history.replaceState({}, document.title, window.location.pathname);
                         }
                     })
@@ -229,12 +236,15 @@
                 document.getElementById('login-button').classList.add('hidden');
                 document.getElementById('logout-button').classList.remove('hidden');
                 document.getElementById('user-profile').innerHTML = `
-                    <img src="${user.avatar_url}" alt="${user.username}" class="w-10 h-10 rounded-full">
-                    <span>${user.username}</span>
+                    <img src="${user.avatar_url}" alt="${user.username}" class="w-8 h-8 rounded-full">
+                    <span class="neon-text">${user.username}</span>
                 `;
                 if (user.id === ADMIN_ID) {
                     document.getElementById('admin-tab').style.display = 'block';
                 }
+            } else {
+                document.getElementById('login-button').classList.remove('hidden');
+                document.getElementById('logout-button').classList.add('hidden');
             }
         }
 
@@ -272,9 +282,7 @@
         // Check for logged-in user on page load
         document.addEventListener('DOMContentLoaded', () => {
             const user = JSON.parse(localStorage.getItem('user'));
-            if (user) {
-                updateUI(user);
-            }
+            updateUI(user);
             handleCallback();
         });
     </script>
