@@ -199,8 +199,8 @@
 
     <script>
         // Discord OAuth2 configuration
-        const CLIENT_ID = '1385094110255251466';
-        const REDIRECT_URI = 'https://www.echomodding.org';
+        const CLIENT_ID = 'YOUR_DISCORD_CLIENT_ID';
+        const REDIRECT_URI = 'https://your-netlify-site.netlify.app/.netlify/functions/callback';
         const ADMIN_ID = '1204549082824310847';
 
         // Display error messages
@@ -217,11 +217,11 @@
         // Redirect to Discord OAuth2 login
         function loginWithDiscord() {
             clearError();
-            if (!CLIENT_ID || CLIENT_ID === 'YOUR_DISCORD_CLIENT_ID') {
+            if (!CLIENT_ID || CLIENT_ID === '1385094110255251466') {
                 showError('Error: Discord Client ID not configured. Please set CLIENT_ID.');
                 return;
             }
-            if (!REDIRECT_URI || REDIRECT_URI.includes('your-netlify-site')) {
+            if (!REDIRECT_URI || REDIRECT_URI.includes('https://www.echomodding.org')) {
                 showError('Error: Netlify redirect URI not configured. Please set REDIRECT_URI.');
                 return;
             }
@@ -260,21 +260,22 @@
                     }
                 });
                 if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
+                    const text = await response.text();
+                    throw new Error(`HTTP error! Status: ${response.status}, Response: ${text}`);
                 }
                 const data = await response.json();
                 console.log('Received user data:', data);
-                if (data.id) {
+                if (data.id && data.username) {
                     localStorage.setItem('user', JSON.stringify(data));
                     updateUI(data);
                     window.history.replaceState({}, document.title, window.location.pathname);
                     console.log('User data saved and UI updated');
                 } else {
-                    showError('Error: No user ID received from server.');
+                    showError('Error: Invalid user data received from server.');
                 }
             } catch (error) {
                 console.error('Error fetching user data:', error);
-                showError('Error: Could not complete login. Check console for details.');
+                showError(`Error: Could not complete login. ${error.message}`);
             }
         }
 
