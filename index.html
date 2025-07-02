@@ -63,11 +63,20 @@
             position: absolute;
             background: #e6e6fa;
             border-radius: 50%;
-            animation: twinkle 2s infinite alternate;
+            animation: moveAndFade 10s linear infinite;
         }
-        @keyframes twinkle {
-            0% { opacity: 0.4; }
-            100% { opacity: 1; }
+        @keyframes moveAndFade {
+            0% {
+                opacity: 0.4;
+                transform: translateX(0);
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0.4;
+                transform: translateX(-100vw);
+            }
         }
     </style>
 </head>
@@ -76,7 +85,7 @@
 
     <header class="p-8 text-center relative z-10">
         <h1 class="text-5xl font-bold neon-text mb-2">Echo Modding</h1>
-        <p class="text-xl">Site By <color=purple>Qstar</p>
+        <p class="text-xl">Site By <span style="color: #800080;">Qstar</span></p>
     </header>
 
     <nav class="bg-transparent p-6 relative z-10">
@@ -106,7 +115,7 @@
         <section id="update-logs" class="tab-content">
             <div class="glass-card p-6 rounded-xl">
                 <h2 class="text-4xl font-bold neon-text mb-4">Update Logs</h2>
-                <ul class="尖list-disc pl-6 space-y-3">
+                <ul class="list-disc pl-6 space-y-3">
                     <li><strong>July 2, 2025:</strong> Yea Added uhh a quest template for c++ hooking.</li>
                 </ul>
             </div>
@@ -152,16 +161,18 @@
             event.currentTarget.classList.add('active');
         }
 
-        // Create starfield effect
+        // Create starfield effect with moving and fading stars
         const starfield = document.getElementById('starfield');
         for (let i = 0; i < 100; i++) {
             const star = document.createElement('div');
             star.className = 'star';
-            star.style.width = `${Math.random() * 3}px`;
-            star.style.height = star.style.width;
-            star.style.left = `${Math.random() * 100}%`;
+            const size = Math.random() * 3 + 1;
+            star.style.width = `${size}px`;
+            star.style.height = `${size}px`;
+            star.style.left = `${Math.random() * 200}%`; // Start off-screen to the right
             star.style.top = `${Math.random() * 100}%`;
-            star.style.animationDelay = `${Math.random() * 2}s`;
+            star.style.animationDuration = `${Math.random() * 10 + 5}s`; // Random duration between 5-15s
+            star.style.animationDelay = `${Math.random() * 5}s`; // Random delay
             starfield.appendChild(star);
         }
     </script>
