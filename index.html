@@ -3,42 +3,168 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fatass info</title>
+    <title>Echo Modding</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            overflow: hidden;
+        body {
+            background: url('https://www.transparenttextures.com/patterns/stardust.png') repeat, linear-gradient(135deg, #0a1428 0%, #1e2a44 100%);
+            color: #e6e6fa;
+            font-family: 'Orbitron', sans-serif;
+            overflow-x: hidden;
         }
-        .container {
-            position: relative;
-            width: 100%;
-            height: 100%;
+        .tab-content {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
         }
-        img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        .tab-content.active {
             display: block;
+            opacity: 1;
         }
-        .text {
+        .tab-button {
+            transition: all 0.3s ease;
+            background: rgba(0, 183, 235, 0.2);
+            border: 1px solid #00b7eb;
+        }
+        .tab-button:hover {
+            background: #00b7eb;
+            color: #0a1428;
+            transform: scale(1.05);
+        }
+        .tab-button.active {
+            background: #00b7eb;
+            color: #0a1428;
+            border-bottom: 3px solid #66d9ef;
+        }
+        .neon-text {
+            text-shadow: 0 0 5px #00b7eb, 0 0 10px #00b7eb, 0 0 20px #66d9ef;
+        }
+        .glass-card {
+            background: rgba(10, 20, 40, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 183, 235, 0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 183, 235, 0.3);
+        }
+        .starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        .star {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: white;
-            font-size: 48px;
-            font-family: Arial, sans-serif;
-            text-align: center;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+            background: #e6e6fa;
+            border-radius: 50%;
+            animation: twinkle 2s infinite alternate;
+        }
+        @keyframes twinkle {
+            0% { opacity: 0.4; }
+            100% { opacity: 1; }
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <img src="https://i.imgur.com/Yp9XgYA.png" alt="Full screen image">
-        <div class="text">Source IP: 162.81.249.179 (Knoxville, TN, US) | User Agent: iPhone Safari (iOS 18.5) | Timestamp: July 1, 2025 at 12:43:17 | GMT Phone: (601) 717 0224</div>
-    </div>
+<body class="min-h-screen flex flex-col">
+    <div class="starfield" id="starfield"></div>
+
+    <header class="p-8 text-center relative z-10">
+        <h1 class="text-5xl font-bold neon-text mb-2">Echo Modding</h1>
+        <p class="text-xl">Site By <color=purple>Qstar</p>
+    </header>
+
+    <nav class="bg-transparent p-6 relative z-10">
+        <ul class="flex justify-center space-x-6">
+            <li>
+                <button class="tab-button px-8 py-3 text-lg font-semibold rounded-full active" onclick="openTab('home')">Home</button>
+            </li>
+            <li>
+                <button class="tab-button px-8 py-3 text-lg font-semibold rounded-full" onclick="openTab('update-logs')">Update Logs</button>
+            </li>
+            <li>
+                <button class="tab-button px-8 py-3 text-lg font-semibold rounded-full" onclick="openTab('modding-stuff')">Modding Stuff</button>
+            </li>
+        </ul>
+    </nav>
+
+    <main class="flex-grow p-8 relative z-10">
+        <section id="home" class="tab-content active">
+            <div class="glass-card p-6 rounded-xl">
+                <h2 class="text-4xl font-bold neon-text mb-4">Welcome to Echo Modding</h2>
+                <p class="text-lg mb-4">Echo Modding Was Created By my Pookie Bear Mint and ye we jsut mod </p>
+                <div class="mt-6">
+                    <img src="data:image/webp;base64,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" alt="Galactic Modding Banner" class="rounded-xl shadow-lg mx-auto w-full max-w-4xl">
+                </div>
+            </div>
+        </section>
+
+        <section id="update-logs" class="tab-content">
+            <div class="glass-card p-6 rounded-xl">
+                <h2 class="text-4xl font-bold neon-text mb-4">Update Logs</h2>
+                <ul class="尖list-disc pl-6 space-y-3">
+                    <li><strong>July 2, 2025:</strong> Yea Added uhh a quest template for c++ hooking.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="modding-stuff" class="tab-content">
+            <div class="glass-card p-6 rounded-xl">
+                <h2 class="text-4xl font-bold neon-text mb-4">Modding Stuff</h2>
+                <p class="text-lg mb-4">All The Modding Resources You Need!</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="glass-card p-4 rounded-lg">
+                        <h3 class="text-2xl font-semibold neon-text">Modding Template C++</h3>
+                        <p>Download our latest toolkit for crafting mods across the galaxy.</p>
+                        <a href="https://pixeldrain.com/api/file/sWsVXBA1" class="text-blue-300 hover:text-blue-100 inline-block mt-2">Download Now</a>
+                    </div>
+                    <div class="glass-card p-4 rounded-lg">
+                        <h3 class="text-2xl font-semibold neon-text">Soon 👀</h3>
+                        <p>I said soon or i'll goon - thatonemonke.</p>
+                        <a href="#" class="text-blue-300 hover:text-blue-100 inline-block mt-2">View Tutorials</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-transparent p-6 text-center relative z-10">
+        <p class="text-lg">© 2025 Echo Modding. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function openTab(tabName) {
+            const tabs = document.querySelectorAll('.tab-content');
+            const buttons = document.querySelectorAll('.tab-button');
+            
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+            buttons.forEach(button => {
+                button.classList.remove('active');
+            });
+
+            document.getElementById(tabName).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // Create starfield effect
+        const starfield = document.getElementById('starfield');
+        for (let i = 0; i < 100; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.width = `${Math.random() * 3}px`;
+            star.style.height = star.style.width;
+            star.style.left = `${Math.random() * 100}%`;
+            star.style.top = `${Math.random() * 100}%`;
+            star.style.animationDelay = `${Math.random() * 2}s`;
+            starfield.appendChild(star);
+        }
+    </script>
 </body>
 </html>
