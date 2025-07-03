@@ -37,22 +37,23 @@
       .button-container {
         display: flex;
         justify-content: center;
-        margin: 15px 0;
+        margin: 10px 0;
+        gap: 10px;
       }
 
-      .btn-generate {
+      .btn {
         background-color: #00ffff;
         border: none;
         color: #000;
         font-size: 1rem;
-        padding: 10px 25px;
+        padding: 10px 20px;
         border-radius: 8px;
         cursor: pointer;
         transition: 0.3s;
         box-shadow: 0 0 10px #00ffffaa;
       }
 
-      .btn-generate:hover {
+      .btn:hover {
         background-color: #00d5d5;
       }
 
@@ -76,7 +77,8 @@
     <div id="blocklyDiv"></div>
 
     <div class="button-container">
-      <button class="btn-generate" onclick="generateCode()">💾 Generate Bot Code</button>
+      <button class="btn" onclick="generateCode()">💾 Generate Code</button>
+      <button class="btn" onclick="exportFile()">📦 Export Bot.js</button>
     </div>
 
     <pre id="output">// Bot code output</pre>
@@ -88,143 +90,44 @@
         <block type="on_message_contains"></block>
       </category>
 
-      <category name="🟩 Actions" colour="#5CA65C">
-        <block type="bot_response"></block>
-        <block type="wait_seconds"></block>
-        <block type="send_dm"></block>
+      <category name="🟨 Moderation" colour="10">
+        <block type="mod_kick"></block>
+        <block type="mod_ban"></block>
+        <block type="mod_mute"></block>
+        <block type="mod_warn"></block>
         <block type="delete_message"></block>
       </category>
 
-      <category name="🟨 Logic" colour="#FFD700">
+      <category name="🎮 Minigames" colour="290">
+        <block type="game_coinflip"></block>
+        <block type="game_rps"></block>
+        <block type="game_guess"></block>
+        <block type="game_slot"></block>
+        <block type="game_dice"></block>
+      </category>
+
+      <category name="🧪 Extras" colour="260">
+        <block type="send_embed"></block>
+        <block type="assign_role"></block>
+        <block type="remove_role"></block>
+        <block type="timeout_user"></block>
+        <block type="level_up"></block>
+      </category>
+
+      <category name="🔁 Logic" colour="#FFD700">
         <block type="controls_if"></block>
         <block type="logic_compare"></block>
         <block type="logic_boolean"></block>
       </category>
 
-      <category name="🟥 Variables" colour="#E06C75">
-        <block type="variables_set"></block>
-        <block type="variables_get"></block>
-      </category>
-
-      <category name="🔢 Math" colour="#B5CEA8">
+      <category name="📦 Text & Math" colour="#9CDCFE">
+        <block type="text"></block>
+        <block type="text_join"></block>
         <block type="math_number"></block>
         <block type="math_arithmetic"></block>
       </category>
-
-      <category name="🧪 Text" colour="#9CDCFE">
-        <block type="text"></block>
-        <block type="text_join"></block>
-      </category>
     </xml>
 
-    <script>
-      Blockly.defineBlocksWithJsonArray([
-        {
-          type: "bot_command",
-          message0: "when /%1 is used",
-          args0: [{ type: "field_input", name: "CMD", text: "start" }],
-          message1: "%1",
-          args1: [{ type: "input_statement", name: "DO" }],
-          colour: 230,
-        },
-        {
-          type: "on_user_join",
-          message0: "when user joins",
-          message1: "%1",
-          args1: [{ type: "input_statement", name: "DO" }],
-          colour: 200,
-        },
-        {
-          type: "on_message_contains",
-          message0: "when message contains %1",
-          args0: [{ type: "field_input", name: "TEXT", text: "hello" }],
-          message1: "%1",
-          args1: [{ type: "input_statement", name: "DO" }],
-          colour: 200,
-        },
-        {
-          type: "bot_response",
-          message0: "send message %1",
-          args0: [{ type: "field_input", name: "TEXT", text: "Hello, space traveler!" }],
-          previousStatement: null,
-          nextStatement: null,
-          colour: 160,
-        },
-        {
-          type: "send_dm",
-          message0: "send DM to user: %1",
-          args0: [{ type: "field_input", name: "TEXT", text: "Welcome!" }],
-          previousStatement: null,
-          nextStatement: null,
-          colour: 160,
-        },
-        {
-          type: "wait_seconds",
-          message0: "wait %1 seconds",
-          args0: [{ type: "field_number", name: "SECONDS", value: 1 }],
-          previousStatement: null,
-          nextStatement: null,
-          colour: 60,
-        },
-        {
-          type: "delete_message",
-          message0: "delete message",
-          previousStatement: null,
-          nextStatement: null,
-          colour: 60,
-        }
-      ]);
-
-      const workspace = Blockly.inject("blocklyDiv", {
-        toolbox: document.getElementById("toolbox"),
-        theme: Blockly.Themes.Dark,
-        scrollbars: true,
-        trashcan: true,
-        renderer: "zelos", // futuristic-looking block renderer
-      });
-
-      const jsGen = Blockly.JavaScript;
-
-      jsGen.forBlock["bot_command"] = function (block, generator) {
-        const cmd = block.getFieldValue("CMD");
-        const body = generator.statementToCode(block, "DO");
-        return `bot.command("/${cmd}", async (ctx) => {\n${body}});\n`;
-      };
-
-      jsGen.forBlock["on_user_join"] = function (block, generator) {
-        const body = generator.statementToCode(block, "DO");
-        return `bot.on("guildMemberAdd", async (member) => {\n${body}});\n`;
-      };
-
-      jsGen.forBlock["on_message_contains"] = function (block, generator) {
-        const text = block.getFieldValue("TEXT");
-        const body = generator.statementToCode(block, "DO");
-        return `bot.on("messageCreate", async (msg) => {\n  if (msg.content.includes("${text}")) {\n${body}  }\n});\n`;
-      };
-
-      jsGen.forBlock["bot_response"] = function (block) {
-        const msg = block.getFieldValue("TEXT");
-        return `  ctx.reply("${msg}");\n`;
-      };
-
-      jsGen.forBlock["send_dm"] = function (block) {
-        const msg = block.getFieldValue("TEXT");
-        return `  member.send("${msg}");\n`;
-      };
-
-      jsGen.forBlock["wait_seconds"] = function (block) {
-        const seconds = block.getFieldValue("SECONDS");
-        return `  await new Promise(r => setTimeout(r, ${seconds * 1000}));\n`;
-      };
-
-      jsGen.forBlock["delete_message"] = function () {
-        return `  msg.delete();\n`;
-      };
-
-      function generateCode() {
-        const code = jsGen.workspaceToCode(workspace);
-        document.getElementById("output").textContent = code || "// No code generated.";
-      }
-    </script>
+    <script src="spacebot-builder.js"></script>
   </body>
 </html>
