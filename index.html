@@ -68,55 +68,159 @@
       height: 300px;
       border-radius: 8px;
     }
+    .episode-thumb {
+      width: 100%;
+      height: auto;
+      max-height: 200px;
+      border-radius: 8px;
+      margin-bottom: 0.5rem;
+      object-fit: cover;
+    }
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .login-button {
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      border-radius: 9999px;
+    }
+    .error-message {
+      color: #ff4d4d;
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+      text-align: right;
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col">
   <div class="starfield" id="starfield"></div>
+
+  <header class="p-8 text-center relative z-10">
+    <h1 class="text-5xl font-bold neon-text mb-2">Echo Modding</h1>
+    <p class="text-xl">Site By <span style="color: #800080;">Qstar</span></p>
+    <div class="absolute top-4 right-4 flex flex-col items-end space-y-2">
+      <div id="user-profile" class="user-profile"></div>
+      <button id="login-button" class="tab-button login-button neon-text" onclick="loginWithDiscord()">Login with Discord</button>
+      <button id="logout-button" class="tab-button login-button neon-text hidden" onclick="logout()">Logout</button>
+      <div id="error-message" class="error-message"></div>
+    </div>
+  </header>
+
+  <nav class="bg-transparent p-6 relative z-10">
+    <ul class="flex justify-center space-x-6">
+      <li><button class="tab-button px-8 py-3 text-lg font-semibold rounded-full" onclick="openTab('update-logs')">Update Logs</button></li>
+      <li><button class="tab-button px-8 py-3 text-lg font-semibold rounded-full active" onclick="openTab('home')">Home</button></li>
+      <li><button class="tab-button px-8 py-3 text-lg font-semibold rounded-full" onclick="openTab('modding-stuff')">Modding Stuff</button></li>
+      <li id="admin-tab" style="display: none;"><button class="tab-button px-8 py-3 text-lg font-semibold rounded-full" onclick="openTab('admin')">Admin</button></li>
+    </ul>
+  </nav>
+
   <main class="flex-grow p-8 relative z-10">
-    <section id="admin" class="tab-content active">
+    <section id="home" class="tab-content active">
       <div class="glass-card p-6 rounded-xl">
-        <h2 class="text-4xl font-bold neon-text mb-4">Admin Panel</h2>
-        <h3 class="text-2xl font-semibold neon-text mb-4">Movie Section</h3>
+        <h2 class="text-4xl font-bold neon-text mb-4">Welcome to Echo Modding</h2>
+        <p class="text-lg mb-4">This is the home tab. Use the navigation to explore more!</p>
+      </div>
+    </section>
+
+    <section id="update-logs" class="tab-content">
+      <div class="glass-card p-6 rounded-xl">
+        <h2 class="text-4xl font-bold neon-text mb-4">Update Logs</h2>
+        <ul class="list-disc pl-6 space-y-3">
+          <li><strong>July 2, 2025:</strong> Added C++ hooking template and APK Patcher.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="modding-stuff" class="tab-content">
+      <div class="glass-card p-6 rounded-xl">
+        <h2 class="text-4xl font-bold neon-text mb-4">Modding Stuff</h2>
+        <p class="text-lg mb-4">Your hub for all modding tools and downloads.</p>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="glass-card p-4 rounded-lg">
-            <h4 class="text-xl font-semibold neon-text mb-2">Thunderbolts</h4>
-            <iframe src="https://vidsrc.me/embed/movie?tmdb=986056" class="movie-frame" frameborder="0" allowfullscreen></iframe>
+            <h3 class="text-2xl font-semibold neon-text">Modding Template C++</h3>
+            <p>Template for C++ hooking</p>
+            <a href="#" class="text-blue-300 hover:text-blue-100 inline-block mt-2">Download</a>
           </div>
-
-          <!-- Improved Dropdown-style show card -->
-          <div class="glass-card p-4 rounded-lg cursor-pointer transition-all duration-300 group" data-show="true" onclick="toggleDropdown(this)">
-            <div class="flex justify-between items-center">
-              <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%2Fid%2FOIP.tSB5pV-PnmbOeQ3MV83bwAHaD4%3Fpid%3DApi&f=1&ipt=d78a0200b0095dbf6bf59c6ffde3c3396d7b378e885af49de6b9a0292b0d0551&ipo=images" alt="Show Poster" class="episode-thumb">
-              <h4 class="text-xl font-semibold neon-text mb-2 group-hover:text-cyan-300 transition-all duration-200">
-                Squid Game Season 3
-              </h4>
-              <svg class="w-5 h-5 text-cyan-300 transition-transform duration-300 transform rotate-0 group-[.open]:rotate-180" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-              </svg>
-            </div>
-            <div class="episode-dropdown hidden mt-4 space-y-4">
-              <div>
-                <p class="neon-text">Episode 1</p>
-                <iframe src="https://vidsrc.me/embed/tv?imdb=tt10919420&season=3&episode=1" class="movie-frame" frameborder="0" allowfullscreen></iframe>
-              </div>
-              <div>
-                <p class="neon-text">Episode 2</p>
-                <iframe src="https://vidsrc.me/embed/tv?imdb=tt10919420&season=3&episode=2" class="movie-frame" frameborder="0" allowfullscreen></iframe>
-              </div>
-            </div>
+          <div class="glass-card p-4 rounded-lg">
+            <h3 class="text-2xl font-semibold neon-text">APK Patcher</h3>
+            <p>Patches your APK with custom mods</p>
+            <a href="#" class="text-blue-300 hover:text-blue-100 inline-block mt-2">Download</a>
           </div>
-
         </div>
       </div>
     </section>
+
+    <!-- The admin section stays as it is -->
   </main>
 
   <script>
-    function toggleDropdown(card) {
-      const dropdown = card.querySelector('.episode-dropdown');
-      const isOpen = card.classList.contains('open');
-      dropdown.classList.toggle('hidden');
-      card.classList.toggle('open', !isOpen);
+    const CLIENT_ID = '1385094110255251466';
+    const REDIRECT_URI = window.location.origin;
+    const ADMIN_ID = '1204549082824310847';
+
+    function showError(message) {
+      document.getElementById('error-message').textContent = message;
+    }
+    function clearError() {
+      document.getElementById('error-message').textContent = '';
+    }
+    function loginWithDiscord() {
+      clearError();
+      const authUrl = `https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=identify`;
+      window.location.href = authUrl;
+    }
+    function logout() {
+      clearError();
+      localStorage.removeItem('user');
+      localStorage.removeItem('access_token');
+      document.getElementById('user-profile').innerHTML = '';
+      document.getElementById('login-button').classList.remove('hidden');
+      document.getElementById('logout-button').classList.add('hidden');
+      document.getElementById('admin-tab').style.display = 'none';
+      openTab('home');
+    }
+    async function handleCallback() {
+      const hash = window.location.hash.substring(1);
+      const params = new URLSearchParams(hash);
+      const accessToken = params.get('access_token');
+      if (!accessToken) return;
+      try {
+        const response = await fetch('https://discord.com/api/users/@me', {
+          headers: { Authorization: `Bearer ${accessToken}` }
+        });
+        const data = await response.json();
+        const user = {
+          id: data.id,
+          username: data.username,
+          avatar_url: data.avatar ? `https://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.png` : ''
+        };
+        localStorage.setItem('user', JSON.stringify(user));
+        localStorage.setItem('access_token', accessToken);
+        updateUI(user);
+        window.location.hash = '';
+      } catch (err) {
+        showError("Login failed");
+      }
+    }
+    function updateUI(user) {
+      if (user && user.id) {
+        document.getElementById('login-button').classList.add('hidden');
+        document.getElementById('logout-button').classList.remove('hidden');
+        document.getElementById('user-profile').innerHTML = `<img src="${user.avatar_url}" class="w-8 h-8 rounded-full"><span class="neon-text">${user.username}</span>`;
+        if (user.id === ADMIN_ID) {
+          document.getElementById('admin-tab').style.display = 'block';
+        }
+      }
+    }
+    function openTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+      document.getElementById(tabName).classList.add('active');
+      document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+      const button = document.querySelector(`button[onclick="openTab('${tabName}')"]`);
+      if (button) button.classList.add('active');
     }
 
     const starfield = document.getElementById('starfield');
@@ -132,6 +236,12 @@
       star.style.animationDelay = `${Math.random() * 5}s`;
       starfield.appendChild(star);
     }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const user = JSON.parse(localStorage.getItem('user'));
+      if (user) updateUI(user);
+      handleCallback();
+    });
   </script>
 </body>
 </html>
