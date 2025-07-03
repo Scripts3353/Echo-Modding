@@ -1,4 +1,4 @@
-// backend/index.js (Node.js + Express + simple runtime)
+// backend/index.js (Node.js + Express + dashboard)
 
 const express = require("express");
 const fs = require("fs");
@@ -13,21 +13,48 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static("public"));
 
-// Save the code to file
+// In-memory bot state
+let isRunning = false;
+let botProcess = null;
+
+// Save code to file
 app.post("/save", (req, res) => {
   const { code } = req.body;
   if (!code) return res.status(400).send("Code is missing.");
-
   fs.writeFileSync("./bot.js", code);
-  return res.json({ message: "Bot code saved to bot.js" });
+  return res.json({ message: "Bot code saved." });
 });
 
-// Run the bot.js file
+// Run bot
 app.post("/run", (req, res) => {
-  exec("node bot.js", (err, stdout, stderr) => {
-    if (err) return res.status(500).send(stderr);
-    return res.send(stdout || "Bot ran successfully.");
+  if (isRunning) return res.status(400).send("Bot is already running.");
+  botProcess = exec("node bot.js", (err, stdout, stderr) => {
+    isRunning = false;
+    if (err) console.error(stderr);
+    else console.log(stdout);
   });
+  isRunning = true;
+  return res.send("Bot started.");
 });
 
-app.listen(PORT, () => console.log(`✅ SpaceBot backend running on http://localhost:${PORT}`));
+// Stop bot
+app.post("/stop", (req, res) => {
+  if (!isRunning || !botProcess) return res.status(400).send("Bot not running.");
+  botProcess.kill();
+  isRunning = false;
+  return res.send("Bot stopped.");
+});
+
+// Bot status
+app.get("/status", (req, res) => {
+  return res.json({ running: isRunning });
+});
+
+// Dashboard HTML
+app.get("/dashboard", (req, res) => {
+  res.sendFile(path.join(__dirname, "dashboard.html"));
+});
+
+app.listen(PORT, () =>
+  console.log(`✅ Dashboard ready at http://localhost:${PORT}/dashboard`)
+);
