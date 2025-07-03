@@ -1,133 +1,485 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>🚀 Space Bot Builder</title>
-    <script src="https://unpkg.com/blockly/blockly.min.js"></script>
-    <style>
-      @import url('https://fonts.googleapis.com/css2?family=Orbitron&display=swap');
+<head>
+  <meta charset="UTF-8" />
+  <title>🛸 Space Bot Builder & Dashboard</title>
 
-      html, body {
-        margin: 0;
-        height: 100%;
-        background: radial-gradient(circle at center, #0a0f2e 0%, #0d0d25 100%);
-        font-family: 'Orbitron', sans-serif;
-        color: white;
-        overflow: hidden;
-      }
+  <!-- Blockly CDN -->
+  <script src="https://unpkg.com/blockly/blockly.min.js"></script>
 
-      h1 {
-        text-align: center;
-        font-size: 2.5rem;
-        color: #00ffff;
-        padding: 20px;
-        text-shadow: 0 0 10px #00ffff;
-      }
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron&display=swap');
 
-      #blocklyDiv {
-        height: 70vh;
-        width: 95%;
-        margin: auto;
-        border: 2px solid #00ffff;
-        border-radius: 10px;
-        box-shadow: 0 0 20px #00ffff66;
-        background: #0d0d2b;
-      }
+    body {
+      margin: 0;
+      background: radial-gradient(circle at center, #0a0f2e, #0d0d25);
+      font-family: 'Orbitron', sans-serif;
+      color: #00ffff;
+      text-align: center;
+      padding: 1rem;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
 
-      .button-container {
-        display: flex;
-        justify-content: center;
-        margin: 10px 0;
-        gap: 10px;
-      }
+    h1 {
+      font-size: 2.5rem;
+      text-shadow: 0 0 10px #00ffff;
+      margin-bottom: 1rem;
+    }
 
-      .btn {
-        background-color: #00ffff;
-        border: none;
-        color: #000;
-        font-size: 1rem;
-        padding: 10px 20px;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: 0.3s;
-        box-shadow: 0 0 10px #00ffffaa;
-      }
+    button {
+      background-color: #00ffff;
+      border: none;
+      color: black;
+      padding: 12px 24px;
+      margin: 0 10px 1rem 10px;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      box-shadow: 0 0 10px #00ffff88;
+      transition: background-color 0.2s ease;
+    }
 
-      .btn:hover {
-        background-color: #00d5d5;
-      }
+    button:hover {
+      background-color: #00cccc;
+    }
 
-      #output {
-        width: 95%;
-        height: 180px;
-        background: #111;
-        color: #0ff;
-        border: 1px solid #00ffff;
-        border-radius: 8px;
-        padding: 10px;
-        font-family: 'Courier New', monospace;
-        overflow-y: auto;
-        box-shadow: 0 0 10px #00ffff55 inset;
-        margin: auto;
-      }
-    </style>
-  </head>
-  <body>
-    <h1>🛸 Space Bot Builder</h1>
+    .tabs {
+      margin-bottom: 1rem;
+    }
+
+    .tabs button {
+      margin: 0 5px;
+    }
+
+    #blocklyDiv {
+      height: 450px;
+      width: 100%;
+      border-radius: 12px;
+      border: 2px solid #00ffff88;
+      box-shadow: 0 0 15px #00ffffaa;
+      margin-bottom: 1rem;
+    }
+
+    .button-container {
+      margin-bottom: 1rem;
+    }
+
+    #output {
+      background-color: #111;
+      color: #0ff;
+      border-radius: 8px;
+      padding: 10px;
+      width: 90%;
+      max-width: 900px;
+      margin: 0 auto 2rem auto;
+      font-family: monospace;
+      white-space: pre-wrap;
+      max-height: 250px;
+      overflow-y: auto;
+      box-shadow: 0 0 10px #00ffff99 inset;
+    }
+
+    textarea {
+      margin-top: 20px;
+      width: 90%;
+      max-width: 900px;
+      height: 250px;
+      background-color: #111;
+      color: #0ff;
+      border: 2px solid #00ffff88;
+      border-radius: 8px;
+      padding: 10px;
+      font-family: monospace;
+      resize: vertical;
+      box-shadow: 0 0 10px #00ffffaa inset;
+    }
+
+    input[type="text"] {
+      width: 90%;
+      max-width: 300px;
+      padding: 10px;
+      border-radius: 8px;
+      border: 2px solid #00ffff88;
+      margin-top: 20px;
+      font-family: 'Orbitron', monospace;
+      font-size: 1rem;
+      color: #0ff;
+      background-color: #111;
+      box-shadow: 0 0 10px #00ffffaa inset;
+    }
+
+    #status {
+      margin-top: 15px;
+      font-size: 1.3rem;
+      text-shadow: 0 0 8px #0ff;
+    }
+  </style>
+</head>
+<body>
+  <h1>🛸 Space Bot Builder & Dashboard</h1>
+
+  <div class="tabs">
+    <button onclick="showTab('builder')">🧱 Bot Builder</button>
+    <button onclick="showTab('dashboard')">🛸 Dashboard</button>
+  </div>
+
+  <!-- Bot Builder Tab -->
+  <div id="builder-tab">
     <div id="blocklyDiv"></div>
 
     <div class="button-container">
-      <button class="btn" onclick="generateCode()">💾 Generate Code</button>
-      <button class="btn" onclick="exportFile()">📦 Export Bot.js</button>
+      <button onclick="generateCode()">💾 Generate Code</button>
+      <button onclick="exportFile()">📦 Export Bot.js</button>
     </div>
 
-    <pre id="output">// Bot code output</pre>
+    <pre id="output">// Your generated bot code will appear here...</pre>
+  </div>
 
-    <xml id="toolbox" style="display: none">
-      <category name="🟦 Commands" colour="#5CAEFF">
-        <block type="bot_command"></block>
-        <block type="on_user_join"></block>
-        <block type="on_message_contains"></block>
-      </category>
+  <!-- Dashboard Tab -->
+  <div id="dashboard-tab" style="display:none;">
+    <input id="bot-id" type="text" placeholder="Enter your Bot ID..." />
+    <textarea id="code" placeholder="// Paste or generate your bot code here..."></textarea>
 
-      <category name="🟨 Moderation" colour="10">
-        <block type="mod_kick"></block>
-        <block type="mod_ban"></block>
-        <block type="mod_mute"></block>
-        <block type="mod_warn"></block>
-        <block type="delete_message"></block>
-      </category>
+    <div class="button-container">
+      <button onclick="saveCode()">💾 Save Bot</button>
+      <button onclick="startBot()">▶️ Start Bot</button>
+      <button onclick="stopBot()">⏹ Stop Bot</button>
+    </div>
 
-      <category name="🎮 Minigames" colour="290">
-        <block type="game_coinflip"></block>
-        <block type="game_rps"></block>
-        <block type="game_guess"></block>
-        <block type="game_slot"></block>
-        <block type="game_dice"></block>
-      </category>
+    <div id="status">🔄 Checking bot status...</div>
+  </div>
 
-      <category name="🧪 Extras" colour="260">
-        <block type="send_embed"></block>
-        <block type="assign_role"></block>
-        <block type="remove_role"></block>
-        <block type="timeout_user"></block>
-        <block type="level_up"></block>
-      </category>
+  <script>
+    // Blockly Setup
+    const workspace = Blockly.inject("blocklyDiv", {
+      toolbox: `
+      <xml xmlns="https://developers.google.com/blockly/xml" id="toolbox" style="display: none">
+        <category name="Commands" colour="#4a90e2">
+          <block type="bot_command"></block>
+          <block type="on_user_join"></block>
+          <block type="on_message_contains"></block>
+        </category>
+        <category name="Moderation" colour="#e67e22">
+          <block type="mod_kick"></block>
+          <block type="mod_ban"></block>
+          <block type="mod_mute"></block>
+          <block type="mod_warn"></block>
+          <block type="delete_message"></block>
+        </category>
+        <category name="Minigames" colour="#27ae60">
+          <block type="game_coinflip"></block>
+          <block type="game_rps"></block>
+          <block type="game_guess"></block>
+          <block type="game_slot"></block>
+          <block type="game_dice"></block>
+        </category>
+        <category name="Roles & Timeouts" colour="#9b59b6">
+          <block type="assign_role"></block>
+          <block type="remove_role"></block>
+          <block type="timeout_user"></block>
+          <block type="level_up"></block>
+        </category>
+        <category name="Misc" colour="#34495e">
+          <block type="send_embed"></block>
+        </category>
+      </xml>`,
+      theme: Blockly.Themes.Dark,
+      scrollbars: true,
+      trashcan: true,
+      renderer: "zelos"
+    });
 
-      <category name="🔁 Logic" colour="#FFD700">
-        <block type="controls_if"></block>
-        <block type="logic_compare"></block>
-        <block type="logic_boolean"></block>
-      </category>
+    // Define blocks (copying from previous to keep self-contained)
+    Blockly.defineBlocksWithJsonArray([
+      {
+        type: "bot_command",
+        message0: "when /%1 is used",
+        args0: [{ type: "field_input", name: "CMD", text: "start" }],
+        message1: "%1",
+        args1: [{ type: "input_statement", name: "DO" }],
+        colour: 230
+      },
+      {
+        type: "on_user_join",
+        message0: "when user joins",
+        message1: "%1",
+        args1: [{ type: "input_statement", name: "DO" }],
+        colour: 200
+      },
+      {
+        type: "on_message_contains",
+        message0: "when message contains %1",
+        args0: [{ type: "field_input", name: "TEXT", text: "hello" }],
+        message1: "%1",
+        args1: [{ type: "input_statement", name: "DO" }],
+        colour: 200
+      },
+      {
+        type: "mod_kick",
+        message0: "kick user %1 with reason %2",
+        args0: [
+          { type: "field_input", name: "USER", text: "@user" },
+          { type: "field_input", name: "REASON", text: "rule violation" }
+        ],
+        previousStatement: null,
+        nextStatement: null,
+        colour: 10
+      },
+      {
+        type: "mod_ban",
+        message0: "ban user %1 with reason %2",
+        args0: [
+          { type: "field_input", name: "USER", text: "@user" },
+          { type: "field_input", name: "REASON", text: "spamming" }
+        ],
+        previousStatement: null,
+        nextStatement: null,
+        colour: 10
+      },
+      {
+        type: "mod_mute",
+        message0: "mute user %1 for %2 minutes",
+        args0: [
+          { type: "field_input", name: "USER", text: "@user" },
+          { type: "field_number", name: "MINUTES", value: 5 }
+        ],
+        previousStatement: null,
+        nextStatement: null,
+        colour: 10
+      },
+      {
+        type: "mod_warn",
+        message0: "warn user %1 with reason %2",
+        args0: [
+          { type: "field_input", name: "USER", text: "@user" },
+          { type: "field_input", name: "REASON", text: "toxic behavior" }
+        ],
+        previousStatement: null,
+        nextStatement: null,
+        colour: 10
+      },
+      {
+        type: "delete_message",
+        message0: "delete message",
+        previousStatement: null,
+        nextStatement: null,
+        colour: 10
+      },
+      {
+        type: "game_coinflip",
+        message0: "play coin flip",
+        previousStatement: null,
+        nextStatement: null,
+        colour: 290
+      },
+      {
+        type: "game_rps",
+        message0: "play rock paper scissors",
+        previousStatement: null,
+        nextStatement: null,
+        colour: 290
+      },
+      {
+        type: "game_guess",
+        message0: "play number guessing game",
+        previousStatement: null,
+        nextStatement: null,
+        colour: 290
+      },
+      {
+        type: "game_slot",
+        message0: "play slot machine",
+        previousStatement: null,
+        nextStatement: null,
+        colour: 290
+      },
+      {
+        type: "game_dice",
+        message0: "roll a dice",
+        previousStatement: null,
+        nextStatement: null,
+        colour: 290
+      },
+      {
+        type: "send_embed",
+        message0: "send embed titled %1 with text %2",
+        args0: [
+          { type: "field_input", name: "TITLE", text: "Notice" },
+          { type: "field_input", name: "DESC", text: "Important update!" }
+        ],
+        previousStatement: null,
+        nextStatement: null,
+        colour: 260
+      },
+      {
+        type: "assign_role",
+        message0: "assign role %1 to user",
+        args0: [{ type: "field_input", name: "ROLE", text: "Member" }],
+        previousStatement: null,
+        nextStatement: null,
+        colour: 260
+      },
+      {
+        type: "remove_role",
+        message0: "remove role %1 from user",
+        args0: [{ type: "field_input", name: "ROLE", text: "Muted" }],
+        previousStatement: null,
+        nextStatement: null,
+        colour: 260
+      },
+      {
+        type: "timeout_user",
+        message0: "timeout user %1 for %2 minutes",
+        args0: [
+          { type: "field_input", name: "USER", text: "@user" },
+          { type: "field_number", name: "MINUTES", value: 10 }
+        ],
+        previousStatement: null,
+        nextStatement: null,
+        colour: 260
+      },
+      {
+        type: "level_up",
+        message0: "level up user",
+        previousStatement: null,
+        nextStatement: null,
+        colour: 260
+      }
+    ]);
 
-      <category name="📦 Text & Math" colour="#9CDCFE">
-        <block type="text"></block>
-        <block type="text_join"></block>
-        <block type="math_number"></block>
-        <block type="math_arithmetic"></block>
-      </category>
-    </xml>
+    // Code Generators
+    const jsGen = Blockly.JavaScript;
 
-    <script src="spacebot-builder.js"></script>
-  </body>
+    jsGen.forBlock["bot_command"] = (block, gen) => {
+      const cmd = block.getFieldValue("CMD");
+      const body = gen.statementToCode(block, "DO");
+      return `bot.command("/${cmd}", async (ctx) => {\n${body}});\n`;
+    };
+
+    jsGen.forBlock["on_user_join"] = (block, gen) => {
+      const body = gen.statementToCode(block, "DO");
+      return `bot.on("guildMemberAdd", async (member) => {\n${body}});\n`;
+    };
+
+    jsGen.forBlock["on_message_contains"] = (block, gen) => {
+      const text = block.getFieldValue("TEXT");
+      const body = gen.statementToCode(block, "DO");
+      return `bot.on("messageCreate", async (msg) => {\n  if (msg.content.includes("${text}")) {\n${body}  }\n});\n`;
+    };
+
+    jsGen.forBlock["mod_kick"] = (block) =>
+      `  kick(${block.getFieldValue("USER")}, "${block.getFieldValue("REASON")}");\n`;
+
+    jsGen.forBlock["mod_ban"] = (block) =>
+      `  ban(${block.getFieldValue("USER")}, "${block.getFieldValue("REASON")}");\n`;
+
+    jsGen.forBlock["mod_warn"] = (block) =>
+      `  warn(${block.getFieldValue("USER")}, "${block.getFieldValue("REASON")}");\n`;
+
+    jsGen.forBlock["mod_mute"] = (block) =>
+      `  mute(${block.getFieldValue("USER")}, ${block.getFieldValue("MINUTES")});\n`;
+
+    jsGen.forBlock["delete_message"] = () => `  msg.delete();\n`;
+
+    jsGen.forBlock["game_coinflip"] = () => `  playCoinFlip(ctx);\n`;
+    jsGen.forBlock["game_rps"] = () => `  playRPS(ctx);\n`;
+    jsGen.forBlock["game_guess"] = () => `  playGuessingGame(ctx);\n`;
+    jsGen.forBlock["game_slot"] = () => `  playSlots(ctx);\n`;
+    jsGen.forBlock["game_dice"] = () => `  rollDice(ctx);\n`;
+
+    jsGen.forBlock["send_embed"] = (block) =>
+      `  sendEmbed(ctx, "${block.getFieldValue("TITLE")}", "${block.getFieldValue("DESC")}");\n`;
+
+    jsGen.forBlock["assign_role"] = (block) =>
+      `  assignRole(ctx.user, "${block.getFieldValue("ROLE")}");\n`;
+
+    jsGen.forBlock["remove_role"] = (block) =>
+      `  removeRole(ctx.user, "${block.getFieldValue("ROLE")}");\n`;
+
+    jsGen.forBlock["timeout_user"] = (block) =>
+      `  timeout(${block.getFieldValue("USER")}, ${block.getFieldValue("MINUTES")});\n`;
+
+    jsGen.forBlock["level_up"] = () => `  levelUp(ctx.user);\n`;
+
+    // Generate code and show in output
+    function generateCode() {
+      const code = jsGen.workspaceToCode(workspace);
+      document.getElementById("output").textContent = code || "// No code generated.";
+      // Also update dashboard textarea so user can save/run code
+      document.getElementById("code").value = code;
+    }
+
+    // Export code to .js file
+    function exportFile() {
+      const code = jsGen.workspaceToCode(workspace);
+      const blob = new Blob([code], { type: "text/javascript" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "bot.js";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // Tab switcher
+    function showTab(tab) {
+      document.getElementById("builder-tab").style.display = tab === "builder" ? "block" : "none";
+      document.getElementById("dashboard-tab").style.display = tab === "dashboard" ? "block" : "none";
+    }
+
+    // Dashboard functions
+    function updateStatus() {
+      fetch('/status')
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById('status').innerText = data.running
+            ? `🟢 Bot ${data.botId} is running`
+            : '🔴 Bot is stopped';
+        })
+        .catch(() => {
+          document.getElementById('status').innerText = '⚠️ Error checking status';
+        });
+    }
+
+    function saveCode() {
+      const code = document.getElementById('code').value;
+      fetch('/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code })
+      })
+      .then(res => res.json())
+      .then(data => alert(data.message));
+    }
+
+    function startBot() {
+      const id = document.getElementById('bot-id').value;
+      if (!id) return alert('Please enter your bot ID first.');
+      fetch('/run', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      })
+        .then(res => res.text())
+        .then(msg => {
+          alert(msg);
+          updateStatus();
+        });
+    }
+
+    function stopBot() {
+      fetch('/stop', { method: 'POST' })
+        .then(res => res.text())
+        .then(msg => {
+          alert(msg);
+          updateStatus();
+        });
+    }
+
+    updateStatus();
+    setInterval(updateStatus, 5000);
+  </script>
+</body>
 </html>
