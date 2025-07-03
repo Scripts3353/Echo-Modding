@@ -1,3 +1,4 @@
+<!-- FULL FIXED FILE WITH WORKING ADMIN TAB + ALL TABS RESTORED -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -96,7 +97,6 @@
 </head>
 <body class="min-h-screen flex flex-col">
   <div class="starfield" id="starfield"></div>
-
   <header class="p-8 text-center relative z-10">
     <h1 class="text-5xl font-bold neon-text mb-2">Echo Modding</h1>
     <p class="text-xl">Site By <span style="color: #800080;">Qstar</span></p>
@@ -107,91 +107,93 @@
       <div id="error-message" class="error-message"></div>
     </div>
   </header>
-
   <nav class="bg-transparent p-6 relative z-10">
     <ul class="flex justify-center space-x-6">
       <li><button class="tab-button px-8 py-3 text-lg font-semibold rounded-full" onclick="openTab('update-logs')">Update Logs</button></li>
       <li><button class="tab-button px-8 py-3 text-lg font-semibold rounded-full active" onclick="openTab('home')">Home</button></li>
       <li><button class="tab-button px-8 py-3 text-lg font-semibold rounded-full" onclick="openTab('modding-stuff')">Modding Stuff</button></li>
-      <li id="admin-tab" style="display: none;"><button class="tab-button px-8 py-3 text-lg font-semibold rounded-full" onclick="openTab('admin')">Admin</button></li>
+      <li id="admin-tab" class="hidden"><button class="tab-button px-8 py-3 text-lg font-semibold rounded-full" onclick="openTab('admin')">Admin</button></li>
     </ul>
   </nav>
-
   <main class="flex-grow p-8 relative z-10">
     <section id="home" class="tab-content active">
       <div class="glass-card p-6 rounded-xl">
         <h2 class="text-4xl font-bold neon-text mb-4">Welcome to Echo Modding</h2>
-        <p class="text-lg mb-4">This is the home tab. Use the navigation to explore more!</p>
+        <p class="text-lg mb-4">All your modding resources in one place.</p>
       </div>
     </section>
-
     <section id="update-logs" class="tab-content">
       <div class="glass-card p-6 rounded-xl">
         <h2 class="text-4xl font-bold neon-text mb-4">Update Logs</h2>
         <ul class="list-disc pl-6 space-y-3">
-          <li><strong>July 2, 2025:</strong> Added C++ hooking template and APK Patcher.</li>
+          <li><strong>July 2, 2025:</strong> Added C++ Hook Template and APK Patcher.</li>
         </ul>
       </div>
     </section>
-
     <section id="modding-stuff" class="tab-content">
       <div class="glass-card p-6 rounded-xl">
         <h2 class="text-4xl font-bold neon-text mb-4">Modding Stuff</h2>
-        <p class="text-lg mb-4">Your hub for all modding tools and downloads.</p>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="glass-card p-4 rounded-lg">
-            <h3 class="text-2xl font-semibold neon-text">Modding Template C++</h3>
-            <p>Template for C++ hooking</p>
+            <h3 class="text-2xl font-semibold neon-text">C++ Hook Template</h3>
+            <p>Template project for game modding in C++.</p>
             <a href="#" class="text-blue-300 hover:text-blue-100 inline-block mt-2">Download</a>
           </div>
           <div class="glass-card p-4 rounded-lg">
             <h3 class="text-2xl font-semibold neon-text">APK Patcher</h3>
-            <p>Patches your APK with custom mods</p>
+            <p>Tool to patch and modify APKs.</p>
             <a href="#" class="text-blue-300 hover:text-blue-100 inline-block mt-2">Download</a>
           </div>
         </div>
       </div>
     </section>
-
-    <!-- The admin section stays as it is -->
+    <section id="admin" class="tab-content">
+      <div class="glass-card p-6 rounded-xl">
+        <h2 class="text-4xl font-bold neon-text mb-4">Admin Panel</h2>
+        <p class="text-lg">Only visible to admins</p>
+      </div>
+    </section>
   </main>
-
   <script>
     const CLIENT_ID = '1385094110255251466';
     const REDIRECT_URI = window.location.origin;
     const ADMIN_ID = '1204549082824310847';
 
-    function showError(message) {
-      document.getElementById('error-message').textContent = message;
+    function showError(msg) {
+      document.getElementById('error-message').textContent = msg;
     }
+
     function clearError() {
       document.getElementById('error-message').textContent = '';
     }
+
     function loginWithDiscord() {
       clearError();
       const authUrl = `https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=identify`;
       window.location.href = authUrl;
     }
+
     function logout() {
-      clearError();
       localStorage.removeItem('user');
       localStorage.removeItem('access_token');
-      document.getElementById('user-profile').innerHTML = '';
       document.getElementById('login-button').classList.remove('hidden');
       document.getElementById('logout-button').classList.add('hidden');
-      document.getElementById('admin-tab').style.display = 'none';
+      document.getElementById('user-profile').innerHTML = '';
+      document.getElementById('admin-tab').classList.add('hidden');
       openTab('home');
     }
+
     async function handleCallback() {
       const hash = window.location.hash.substring(1);
       const params = new URLSearchParams(hash);
       const accessToken = params.get('access_token');
       if (!accessToken) return;
-      try {
-        const response = await fetch('https://discord.com/api/users/@me', {
-          headers: { Authorization: `Bearer ${accessToken}` }
-        });
-        const data = await response.json();
+
+      const res = await fetch('https://discord.com/api/users/@me', {
+        headers: { Authorization: `Bearer ${accessToken}` }
+      });
+      const data = await res.json();
+      if (data.id) {
         const user = {
           id: data.id,
           username: data.username,
@@ -201,20 +203,19 @@
         localStorage.setItem('access_token', accessToken);
         updateUI(user);
         window.location.hash = '';
-      } catch (err) {
-        showError("Login failed");
       }
     }
+
     function updateUI(user) {
-      if (user && user.id) {
-        document.getElementById('login-button').classList.add('hidden');
-        document.getElementById('logout-button').classList.remove('hidden');
-        document.getElementById('user-profile').innerHTML = `<img src="${user.avatar_url}" class="w-8 h-8 rounded-full"><span class="neon-text">${user.username}</span>`;
-        if (user.id === ADMIN_ID) {
-          document.getElementById('admin-tab').style.display = 'block';
-        }
+      if (!user) return;
+      document.getElementById('login-button').classList.add('hidden');
+      document.getElementById('logout-button').classList.remove('hidden');
+      document.getElementById('user-profile').innerHTML = `<img src="${user.avatar_url}" class="w-8 h-8 rounded-full"><span class="neon-text">${user.username}</span>`;
+      if (user.id === ADMIN_ID) {
+        document.getElementById('admin-tab').classList.remove('hidden');
       }
     }
+
     function openTab(tabName) {
       document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
       document.getElementById(tabName).classList.add('active');
@@ -223,24 +224,13 @@
       if (button) button.classList.add('active');
     }
 
-    const starfield = document.getElementById('starfield');
-    for (let i = 0; i < 100; i++) {
-      const star = document.createElement('div');
-      star.className = 'star';
-      const size = Math.random() * 3 + 1;
-      star.style.width = `${size}px`;
-      star.style.height = `${size}px`;
-      star.style.left = `${Math.random() * 200}%`;
-      star.style.top = `${Math.random() * 100}%`;
-      star.style.animationDuration = `${Math.random() * 10 + 5}s`;
-      star.style.animationDelay = `${Math.random() * 5}s`;
-      starfield.appendChild(star);
-    }
-
     document.addEventListener('DOMContentLoaded', () => {
       const user = JSON.parse(localStorage.getItem('user'));
       if (user) updateUI(user);
       handleCallback();
+
+      const hashTab = window.location.hash.replace('#', '');
+      if (hashTab && document.getElementById(hashTab)) openTab(hashTab);
     });
   </script>
 </body>
