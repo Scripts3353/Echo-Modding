@@ -1,12 +1,11 @@
-<!-- FULL FIXED FILE WITH WORKING ADMIN TAB + ALL TABS RESTORED -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Echo Modding</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet" />
   <style>
     body {
       background: url('https://www.transparenttextures.com/patterns/stardust.png') repeat, linear-gradient(135deg, #0a1428 0%, #1e2a44 100%);
@@ -20,6 +19,7 @@
       transition: all 0.3s ease;
       background: rgba(0, 183, 235, 0.2);
       border: 1px solid #00b7eb;
+      cursor: pointer;
     }
     .tab-button:hover {
       background: #00b7eb;
@@ -39,6 +39,8 @@
       backdrop-filter: blur(10px);
       border: 1px solid rgba(0, 183, 235, 0.5);
       transition: transform 0.3s ease, box-shadow 0.3s ease;
+      padding: 1.5rem;
+      border-radius: 1rem;
     }
     .glass-card:hover {
       transform: translateY(-5px);
@@ -48,8 +50,8 @@
       position: fixed;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 100%;
+      width: 100vw;
+      height: 100vh;
       pointer-events: none;
       z-index: -1;
     }
@@ -68,11 +70,11 @@
       width: 100%;
       height: 300px;
       border-radius: 8px;
+      border: none;
     }
     .episode-thumb {
       width: 100%;
-      height: auto;
-      max-height: 200px;
+      max-height: 180px;
       border-radius: 8px;
       margin-bottom: 0.5rem;
       object-fit: cover;
@@ -86,6 +88,7 @@
       padding: 0.5rem 1rem;
       font-size: 1rem;
       border-radius: 9999px;
+      user-select: none;
     }
     .error-message {
       color: #ff4d4d;
@@ -93,10 +96,49 @@
       margin-top: 0.5rem;
       text-align: right;
     }
+    .dropdown-btn {
+      background: rgba(0, 183, 235, 0.15);
+      border: 1px solid #00b7eb;
+      padding: 0.6rem 1rem;
+      font-weight: 700;
+      border-radius: 0.5rem;
+      color: #e6e6fa;
+      cursor: pointer;
+      width: 100%;
+      text-align: left;
+      margin-bottom: 1rem;
+      user-select: none;
+    }
+    .dropdown-btn:hover {
+      background: #00b7eb;
+      color: #0a1428;
+      transform: scale(1.05);
+    }
+    .dropdown-content {
+      display: none;
+      margin-bottom: 2rem;
+      border-left: 3px solid #00b7eb;
+      padding-left: 1rem;
+    }
+    .dropdown-content.active {
+      display: block;
+    }
+    .episode-link {
+      color: #00b7eb;
+      display: block;
+      margin-bottom: 0.6rem;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .episode-link:hover {
+      color: #66d9ef;
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col">
   <div class="starfield" id="starfield"></div>
+
   <header class="p-8 text-center relative z-10">
     <h1 class="text-5xl font-bold neon-text mb-2">Echo Modding</h1>
     <p class="text-xl">Site By <span style="color: #800080;">Qstar</span></p>
@@ -107,6 +149,7 @@
       <div id="error-message" class="error-message"></div>
     </div>
   </header>
+
   <nav class="bg-transparent p-6 relative z-10">
     <ul class="flex justify-center space-x-6">
       <li><button class="tab-button px-8 py-3 text-lg font-semibold rounded-full" onclick="openTab('update-logs')">Update Logs</button></li>
@@ -115,23 +158,29 @@
       <li id="admin-tab" class="hidden"><button class="tab-button px-8 py-3 text-lg font-semibold rounded-full" onclick="openTab('admin')">Admin</button></li>
     </ul>
   </nav>
+
   <main class="flex-grow p-8 relative z-10">
+    <!-- Home -->
     <section id="home" class="tab-content active">
-      <div class="glass-card p-6 rounded-xl">
+      <div class="glass-card">
         <h2 class="text-4xl font-bold neon-text mb-4">Welcome to Echo Modding</h2>
         <p class="text-lg mb-4">All your modding resources in one place.</p>
       </div>
     </section>
+
+    <!-- Update Logs -->
     <section id="update-logs" class="tab-content">
-      <div class="glass-card p-6 rounded-xl">
+      <div class="glass-card">
         <h2 class="text-4xl font-bold neon-text mb-4">Update Logs</h2>
         <ul class="list-disc pl-6 space-y-3">
           <li><strong>July 2, 2025:</strong> Added C++ Hook Template and APK Patcher.</li>
         </ul>
       </div>
     </section>
+
+    <!-- Modding Stuff -->
     <section id="modding-stuff" class="tab-content">
-      <div class="glass-card p-6 rounded-xl">
+      <div class="glass-card">
         <h2 class="text-4xl font-bold neon-text mb-4">Modding Stuff</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="glass-card p-4 rounded-lg">
@@ -147,32 +196,97 @@
         </div>
       </div>
     </section>
+
+    <!-- Admin Panel -->
     <section id="admin" class="tab-content">
-      <div class="glass-card p-6 rounded-xl">
+      <div class="glass-card">
         <h2 class="text-4xl font-bold neon-text mb-4">Admin Panel</h2>
-        <p class="text-lg">Only visible to admins</p>
+        <p class="text-lg mb-8">Only visible to admins</p>
+
+        <!-- Movie Section -->
+        <h3 class="text-2xl font-bold neon-text mb-4">Movie Section</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+          <!-- Movie Card -->
+          <div class="glass-card p-4 rounded-lg">
+            <h4 class="text-xl font-semibold neon-text mb-2">Thunderbolts</h4>
+            <iframe
+              src="https://vidsrc.me/embed/movie?tmdb=986056"
+              class="movie-frame"
+              allowfullscreen
+              referrerpolicy="origin"
+              frameborder="0"
+            ></iframe>
+          </div>
+
+          <div class="glass-card p-4 rounded-lg">
+            <h4 class="text-xl font-semibold neon-text mb-2">Final Destination Bloodlines</h4>
+            <iframe
+              src="https://vidsrc.me/embed/movie?imdb=tt9619824"
+              class="movie-frame"
+              allowfullscreen
+              referrerpolicy="origin"
+              frameborder="0"
+            ></iframe>
+          </div>
+        </div>
+
+        <!-- TV Show Section -->
+        <h3 class="text-2xl font-bold neon-text mb-4">TV Show Section</h3>
+
+        <!-- Example TV Show Card with dropdown episodes -->
+        <div class="glass-card p-4 rounded-lg mb-6">
+          <div class="dropdown-btn" onclick="toggleDropdown(this)">Squid Games - Season 3</div>
+          <div class="dropdown-content">
+            <a href="https://vidsrc.me/embed/tv?imdb=tt10919420&season=3&episode=1" target="_blank" class="episode-link">Episode 1</a>
+            <a href="https://vidsrc.me/embed/tv?imdb=tt10919420&season=3&episode=2" target="_blank" class="episode-link">Episode 2</a>
+          </div>
+        </div>
+
+        <!-- Another TV Show example with image -->
+        <div class="glass-card p-4 rounded-lg mb-6">
+          <img
+            src="https://upload.wikimedia.org/wikipedia/en/a/a9/Stranger_Things_logo.png"
+            alt="Stranger Things"
+            class="episode-thumb"
+          />
+          <div class="dropdown-btn" onclick="toggleDropdown(this)">Stranger Things - Season 4</div>
+          <div class="dropdown-content">
+            <a href="https://vidsrc.me/embed/tv?imdb=tt4574334&season=4&episode=1" target="_blank" class="episode-link">Episode 1</a>
+            <a href="https://vidsrc.me/embed/tv?imdb=tt4574334&season=4&episode=2" target="_blank" class="episode-link">Episode 2</a>
+            <a href="https://vidsrc.me/embed/tv?imdb=tt4574334&season=4&episode=3" target="_blank" class="episode-link">Episode 3</a>
+          </div>
+        </div>
+
       </div>
     </section>
   </main>
+
+  <footer class="bg-transparent p-6 text-center relative z-10">
+    <p class="text-lg">© 2025 Echo Modding. All rights reserved.</p>
+  </footer>
+
   <script>
+    // Discord OAuth2 Config
     const CLIENT_ID = '1385094110255251466';
     const REDIRECT_URI = window.location.origin;
     const ADMIN_ID = '1204549082824310847';
 
+    // Show error messages
     function showError(msg) {
       document.getElementById('error-message').textContent = msg;
     }
-
     function clearError() {
       document.getElementById('error-message').textContent = '';
     }
 
+    // Discord login
     function loginWithDiscord() {
       clearError();
       const authUrl = `https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=identify`;
       window.location.href = authUrl;
     }
 
+    // Logout function
     function logout() {
       localStorage.removeItem('user');
       localStorage.removeItem('access_token');
@@ -183,39 +297,49 @@
       openTab('home');
     }
 
+    // Handle OAuth callback and fetch user info
     async function handleCallback() {
       const hash = window.location.hash.substring(1);
       const params = new URLSearchParams(hash);
       const accessToken = params.get('access_token');
       if (!accessToken) return;
 
-      const res = await fetch('https://discord.com/api/users/@me', {
-        headers: { Authorization: `Bearer ${accessToken}` }
-      });
-      const data = await res.json();
-      if (data.id) {
-        const user = {
-          id: data.id,
-          username: data.username,
-          avatar_url: data.avatar ? `https://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.png` : ''
-        };
-        localStorage.setItem('user', JSON.stringify(user));
-        localStorage.setItem('access_token', accessToken);
-        updateUI(user);
-        window.location.hash = '';
+      try {
+        const res = await fetch('https://discord.com/api/users/@me', {
+          headers: { Authorization: `Bearer ${accessToken}` }
+        });
+        if (!res.ok) throw new Error('Failed to fetch user info');
+        const data = await res.json();
+        if (data.id) {
+          const user = {
+            id: data.id,
+            username: data.username,
+            avatar_url: data.avatar
+              ? `https://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.png`
+              : 'https://via.placeholder.com/32'
+          };
+          localStorage.setItem('user', JSON.stringify(user));
+          localStorage.setItem('access_token', accessToken);
+          updateUI(user);
+          window.location.hash = '';
+        }
+      } catch (e) {
+        showError('Login failed: ' + e.message);
       }
     }
 
+    // Update UI after login/logout
     function updateUI(user) {
       if (!user) return;
       document.getElementById('login-button').classList.add('hidden');
       document.getElementById('logout-button').classList.remove('hidden');
-      document.getElementById('user-profile').innerHTML = `<img src="${user.avatar_url}" class="w-8 h-8 rounded-full"><span class="neon-text">${user.username}</span>`;
+      document.getElementById('user-profile').innerHTML = `<img src="${user.avatar_url}" class="w-8 h-8 rounded-full" alt="avatar"><span class="neon-text">${user.username}</span>`;
       if (user.id === ADMIN_ID) {
         document.getElementById('admin-tab').classList.remove('hidden');
       }
     }
 
+    // Tab switching
     function openTab(tabName) {
       document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
       document.getElementById(tabName).classList.add('active');
@@ -224,11 +348,34 @@
       if (button) button.classList.add('active');
     }
 
+    // Dropdown toggle for episodes
+    function toggleDropdown(el) {
+      const content = el.nextElementSibling;
+      if (content) content.classList.toggle('active');
+    }
+
+    // Starfield effect
+    const starfield = document.getElementById('starfield');
+    for (let i = 0; i < 100; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+      const size = Math.random() * 3 + 1;
+      star.style.width = `${size}px`;
+      star.style.height = `${size}px`;
+      star.style.left = `${Math.random() * 200}%`;
+      star.style.top = `${Math.random() * 100}%`;
+      star.style.animationDuration = `${Math.random() * 10 + 5}s`;
+      star.style.animationDelay = `${Math.random() * 5}s`;
+      starfield.appendChild(star);
+    }
+
+    // On load
     document.addEventListener('DOMContentLoaded', () => {
       const user = JSON.parse(localStorage.getItem('user'));
       if (user) updateUI(user);
       handleCallback();
 
+      // Open tab from hash if exists
       const hashTab = window.location.hash.replace('#', '');
       if (hashTab && document.getElementById(hashTab)) openTab(hashTab);
     });
