@@ -1,15 +1,17 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <title>🪐 Space Bot Builder</title>
+    <meta charset="UTF-8" />
+    <title>🚀 Space Bot Builder</title>
     <script src="https://unpkg.com/blockly/blockly.min.js"></script>
     <style>
+      @import url('https://fonts.googleapis.com/css2?family=Orbitron&display=swap');
+
       html, body {
-        height: 100%;
         margin: 0;
+        height: 100%;
+        background: radial-gradient(circle at center, #0a0f2e 0%, #0d0d25 100%);
         font-family: 'Orbitron', sans-serif;
-        background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
         color: white;
         overflow: hidden;
       }
@@ -23,18 +25,19 @@
       }
 
       #blocklyDiv {
-        height: 75vh;
+        height: 70vh;
         width: 95%;
         margin: auto;
         border: 2px solid #00ffff;
         border-radius: 10px;
         box-shadow: 0 0 20px #00ffff66;
+        background: #0d0d2b;
       }
 
       .button-container {
         display: flex;
         justify-content: center;
-        margin-top: 20px;
+        margin: 15px 0;
       }
 
       .btn-generate {
@@ -42,7 +45,7 @@
         border: none;
         color: #000;
         font-size: 1rem;
-        padding: 10px 20px;
+        padding: 10px 25px;
         border-radius: 8px;
         cursor: pointer;
         transition: 0.3s;
@@ -55,7 +58,6 @@
 
       #output {
         width: 95%;
-        margin: 20px auto;
         height: 180px;
         background: #111;
         color: #0ff;
@@ -65,48 +67,80 @@
         font-family: 'Courier New', monospace;
         overflow-y: auto;
         box-shadow: 0 0 10px #00ffff55 inset;
+        margin: auto;
       }
-
-      @import url('https://fonts.googleapis.com/css2?family=Orbitron&display=swap');
     </style>
   </head>
-
   <body>
-    <h1>🚀 Space Bot Builder</h1>
-
+    <h1>🛸 Space Bot Builder</h1>
     <div id="blocklyDiv"></div>
 
     <div class="button-container">
       <button class="btn-generate" onclick="generateCode()">💾 Generate Bot Code</button>
     </div>
 
-    <pre id="output">// Your bot code will appear here...</pre>
+    <pre id="output">// Bot code output</pre>
 
     <xml id="toolbox" style="display: none">
-      <category name="🚀 Bot Commands" colour="#5CAEFF">
+      <category name="🟦 Commands" colour="#5CAEFF">
         <block type="bot_command"></block>
+        <block type="on_user_join"></block>
+        <block type="on_message_contains"></block>
       </category>
-      <category name="💬 Bot Actions" colour="#FF5CAD">
+
+      <category name="🟩 Actions" colour="#5CA65C">
         <block type="bot_response"></block>
         <block type="wait_seconds"></block>
+        <block type="send_dm"></block>
+        <block type="delete_message"></block>
       </category>
-      <category name="🔁 Logic" colour="#FFD700">
+
+      <category name="🟨 Logic" colour="#FFD700">
         <block type="controls_if"></block>
+        <block type="logic_compare"></block>
+        <block type="logic_boolean"></block>
+      </category>
+
+      <category name="🟥 Variables" colour="#E06C75">
+        <block type="variables_set"></block>
+        <block type="variables_get"></block>
+      </category>
+
+      <category name="🔢 Math" colour="#B5CEA8">
+        <block type="math_number"></block>
+        <block type="math_arithmetic"></block>
+      </category>
+
+      <category name="🧪 Text" colour="#9CDCFE">
+        <block type="text"></block>
+        <block type="text_join"></block>
       </category>
     </xml>
 
     <script>
-      // Custom Blocks
       Blockly.defineBlocksWithJsonArray([
         {
           type: "bot_command",
-          message0: "when user types /%1",
+          message0: "when /%1 is used",
           args0: [{ type: "field_input", name: "CMD", text: "start" }],
           message1: "%1",
           args1: [{ type: "input_statement", name: "DO" }],
           colour: 230,
-          tooltip: "Starts on command",
-          helpUrl: ""
+        },
+        {
+          type: "on_user_join",
+          message0: "when user joins",
+          message1: "%1",
+          args1: [{ type: "input_statement", name: "DO" }],
+          colour: 200,
+        },
+        {
+          type: "on_message_contains",
+          message0: "when message contains %1",
+          args0: [{ type: "field_input", name: "TEXT", text: "hello" }],
+          message1: "%1",
+          args1: [{ type: "input_statement", name: "DO" }],
+          colour: 200,
         },
         {
           type: "bot_response",
@@ -115,32 +149,57 @@
           previousStatement: null,
           nextStatement: null,
           colour: 160,
-          tooltip: "Send a reply",
-          helpUrl: ""
+        },
+        {
+          type: "send_dm",
+          message0: "send DM to user: %1",
+          args0: [{ type: "field_input", name: "TEXT", text: "Welcome!" }],
+          previousStatement: null,
+          nextStatement: null,
+          colour: 160,
         },
         {
           type: "wait_seconds",
           message0: "wait %1 seconds",
-          args0: [{ type: "field_number", name: "SECONDS", value: 1, min: 0 }],
+          args0: [{ type: "field_number", name: "SECONDS", value: 1 }],
           previousStatement: null,
           nextStatement: null,
           colour: 60,
-          tooltip: "Wait for seconds",
-          helpUrl: ""
+        },
+        {
+          type: "delete_message",
+          message0: "delete message",
+          previousStatement: null,
+          nextStatement: null,
+          colour: 60,
         }
       ]);
 
       const workspace = Blockly.inject("blocklyDiv", {
         toolbox: document.getElementById("toolbox"),
-        theme: Blockly.Themes.Dark
+        theme: Blockly.Themes.Dark,
+        scrollbars: true,
+        trashcan: true,
+        renderer: "zelos", // futuristic-looking block renderer
       });
 
       const jsGen = Blockly.JavaScript;
 
       jsGen.forBlock["bot_command"] = function (block, generator) {
         const cmd = block.getFieldValue("CMD");
-        const statements = generator.statementToCode(block, "DO");
-        return `bot.command("/${cmd}", async (ctx) => {\n${statements}});\n`;
+        const body = generator.statementToCode(block, "DO");
+        return `bot.command("/${cmd}", async (ctx) => {\n${body}});\n`;
+      };
+
+      jsGen.forBlock["on_user_join"] = function (block, generator) {
+        const body = generator.statementToCode(block, "DO");
+        return `bot.on("guildMemberAdd", async (member) => {\n${body}});\n`;
+      };
+
+      jsGen.forBlock["on_message_contains"] = function (block, generator) {
+        const text = block.getFieldValue("TEXT");
+        const body = generator.statementToCode(block, "DO");
+        return `bot.on("messageCreate", async (msg) => {\n  if (msg.content.includes("${text}")) {\n${body}  }\n});\n`;
       };
 
       jsGen.forBlock["bot_response"] = function (block) {
@@ -148,9 +207,18 @@
         return `  ctx.reply("${msg}");\n`;
       };
 
+      jsGen.forBlock["send_dm"] = function (block) {
+        const msg = block.getFieldValue("TEXT");
+        return `  member.send("${msg}");\n`;
+      };
+
       jsGen.forBlock["wait_seconds"] = function (block) {
-        const sec = block.getFieldValue("SECONDS");
-        return `  await new Promise(r => setTimeout(r, ${sec * 1000}));\n`;
+        const seconds = block.getFieldValue("SECONDS");
+        return `  await new Promise(r => setTimeout(r, ${seconds * 1000}));\n`;
+      };
+
+      jsGen.forBlock["delete_message"] = function () {
+        return `  msg.delete();\n`;
       };
 
       function generateCode() {
