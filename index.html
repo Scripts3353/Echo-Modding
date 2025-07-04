@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GameX - APK Library</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <style>
+    body {
+      background: linear-gradient(145deg, #020024, #090979, #00d4ff);
+      background-size: 400% 400%;
+      animation: spaceGradient 15s ease infinite;
+    }
+    @keyframes spaceGradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .disabled-btn {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .apk-card {
+      display: flex;
+      flex-direction: column;
+      border-radius: 1.5rem;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      background: linear-gradient(to bottom right, #0d1b2a, #1b263b);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .apk-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 35px rgba(0, 255, 255, 0.4);
+    }
+    .apk-card img {
+      width: 100%;
+      height: 11rem;
+      object-fit: cover;
+    }
+    .apk-card .p-5 {
+      padding: 1.25rem;
+    }
+  </style>
+</head>
+<body class="text-gray-100 min-h-screen font-sans">
+
+<!-- Patch Notes Modal -->
+<div id="patchModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+  <div class="bg-gray-800 text-white rounded-xl shadow-lg w-full max-w-sm p-6 relative">
+    <h2 class="text-xl font-semibold mb-4">made by @Qstar</h2>
+    <pre class="text-sm text-gray-300 leading-6">
+patch notes: v1
+- I Am Cat Download Is Broken
+    </pre>
+    <div class="mt-6 text-right">
+      <button onclick="closePatchNotes()" class="bg-blue-600 hover:bg-blue-700 px-4 py-1.5 rounded text-sm">OK</button>
+    </div>
+  </div>
+</div>
+
+<!-- Centered Page Title -->
+<div class="w-full text-center py-12">
+  <h1 class="text-5xl font-extrabold text-white tracking-tight">GameX APK Library</h1>
+</div>
+
+<!-- Tabs -->
+<div class="flex justify-center space-x-4 mb-8">
+  <button onclick="filterCards('game')" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">Games</button>
+</div>
+
+<!-- APK Card Grid -->
+<div class="max-w-7xl mx-auto px-6 pb-12">
+  <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" id="apk-grid">
+
+    <!-- I Am Cat VR -->
+    <div class="apk-card" data-type="game">
+      <img src="https://bleedingcool.com/wp-content/uploads/2024/11/I-Am-Cat-Poster-Art-2000x1125.jpg" alt="I Am Cat VR">
+      <div class="p-5">
+        <span class="bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded-full uppercase font-semibold tracking-wide mb-2 inline-block">Game</span>
+        <h3 class="text-xl font-bold mb-2">I Am Cat VR</h3>
+        <p class="text-gray-400 text-sm mb-4">Pirated by Qstar</p>
+        <div class="flex justify-between items-center">
+          <span class="text-green-400 font-medium text-sm">Free</span>
+          <a href="https://pixeldrain.com/api/file/evyBvkCK" download class="bg-green-600 hover:bg-green-700 text-white px-4 py-1 rounded-lg text-sm">Download</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Superhot -->
+    <div class="apk-card" data-type="game">
+      <img src="https://th.bing.com/th/id/OIP.dqA0M2npu_ZJ-1EZBhmaxAHaEK?w=312&h=180" alt="Superhot">
+      <div class="p-5">
+        <span class="bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded-full uppercase font-semibold tracking-wide mb-2 inline-block">Game</span>
+        <h3 class="text-xl font-bold mb-2">Superhot</h3>
+        <p class="text-gray-400 text-sm mb-4">Pirated by Qstar</p>
+        <div class="flex justify-between items-center">
+          <span class="text-green-400 font-medium text-sm">Free</span>
+          <a href="https://pixeldrain.com/api/file/6iJBrMNL" download class="bg-green-600 hover:bg-green-700 text-white px-4 py-1 rounded-lg text-sm">Download</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Shave & Stuff -->
+    <div class="apk-card" data-type="game">
+      <img src="https://th.bing.com/th/id/OIP.0co4tCMY_8dbyy_L-5CyRQHaEK?w=314&h=180" alt="Shave & Stuff">
+      <div class="p-5">
+        <span class="bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded-full uppercase font-semibold tracking-wide mb-2 inline-block">Game</span>
+        <h3 class="text-xl font-bold mb-2">Shave & Stuff</h3>
+        <p class="text-gray-400 text-sm mb-4">Pirated by Qstar</p>
+        <div class="flex justify-between items-center">
+          <span class="text-green-400 font-medium text-sm">Free</span>
+          <a href="https://pixeldrain.com/api/file/zNKbgExA" download class="bg-green-600 hover:bg-green-700 text-white px-4 py-1 rounded-lg text-sm">Download</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Titans Clinic -->
+    <div class="apk-card" data-type="game">
+      <img src="https://th.bing.com/th/id/OIP.o-5IVAKvGzhaqiYrbzLrvgHaEK?w=275&h=180" alt="Titans Clinic">
+      <div class="p-5">
+        <span class="bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded-full uppercase font-semibold tracking-wide mb-2 inline-block">Game</span>
+        <h3 class="text-xl font-bold mb-2">Titans Clinic</h3>
+        <p class="text-gray-400 text-sm mb-4">Pirated by Qstar</p>
+        <div class="flex justify-between items-center">
+          <span class="text-green-400 font-medium text-sm">Free</span>
+          <a href="https://pixeldrain.com/api/file/oyf9Drcd" download class="bg-green-600 hover:bg-green-700 text-white px-4 py-1 rounded-lg text-sm">Download</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  window.addEventListener("load", () => {
+    document.getElementById("patchModal").classList.remove("hidden");
+  });
+
+  function closePatchNotes() {
+    document.getElementById("patchModal").classList.add("hidden");
+  }
+
+  function filterCards(type) {
+    const cards = document.querySelectorAll('.apk-card');
+    cards.forEach(card => {
+      const cardType = card.getAttribute('data-type');
+      card.style.display = cardType === type ? 'block' : 'none';
+    });
+  }
+</script>
+
+</body>
+</html>
