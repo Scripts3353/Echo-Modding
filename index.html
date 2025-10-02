@@ -20,7 +20,7 @@
             position: relative;
         }
 
-        /* Background with futuristic overlay matching image */
+        /* Background */
         .background {
             position: fixed;
             top: 0;
@@ -33,10 +33,9 @@
                 url('https://via.placeholder.com/1920x1080/0a0a1a/16213e?text=Futuristic+Neon+Cityscape') no-repeat center center/cover;
             opacity: 0.4;
             z-index: -2;
-            transition: opacity 0.5s ease;
         }
 
-        /* Enhanced Neon Spots (Floating Orbs) */
+        /* Neon Spots */
         .neon-spots {
             position: absolute;
             width: 80px;
@@ -48,20 +47,14 @@
             opacity: 0;
             animation-delay: 0.5s;
         }
-        .neon-spots:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
+        .neon-spots:nth-child(1) { top: 20%; left: 10%; }
         .neon-spots:nth-child(2) { top: 60%; right: 15%; animation-delay: 2s; }
         .neon-spots:nth-child(3) { bottom: 30%; left: 20%; animation-delay: 4s; width: 60px; height: 60px; }
         .neon-spots:nth-child(4) { top: 40%; right: 5%; animation-delay: 1s; width: 100px; height: 100px; }
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-30px) rotate(180deg); }
-        }
-        @keyframes pulse {
-            0% { box-shadow: 0 0 20px #00ffff, 0 0 40px #ff00ff; }
-            100% { box-shadow: 0 0 30px #00ffff, 0 0 60px #ff00ff, 0 0 80px #ff00ff; }
-        }
+        @keyframes float { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-30px) rotate(180deg); } }
+        @keyframes pulse { 0% { box-shadow: 0 0 20px #00ffff, 0 0 40px #ff00ff; } 100% { box-shadow: 0 0 30px #00ffff, 0 0 60px #ff00ff, 0 0 80px #ff00ff; } }
 
-        /* Subtle Particles for Fancy Atmosphere */
+        /* Particles */
         .particles {
             position: fixed;
             top: 0;
@@ -81,11 +74,7 @@
             animation: twinkle 4s linear infinite;
         }
         .particle:nth-child(odd) { background: #ff00ff; animation-delay: 2s; }
-        @keyframes twinkle {
-            0%, 100% { opacity: 0; transform: scale(0); }
-            50% { opacity: 0.8; transform: scale(1); }
-        }
-        /* Generate 10 particles via CSS */
+        @keyframes twinkle { 0%, 100% { opacity: 0; transform: scale(0); } 50% { opacity: 0.8; transform: scale(1); } }
         .particle:nth-child(1) { top: 10%; left: 20%; animation-duration: 3s; }
         .particle:nth-child(2) { top: 30%; left: 80%; animation-duration: 5s; }
         .particle:nth-child(3) { top: 70%; left: 10%; animation-duration: 4s; }
@@ -97,12 +86,11 @@
         .particle:nth-child(9) { top: 60%; left: 40%; animation-duration: 4s; }
         .particle:nth-child(10) { bottom: 60%; right: 60%; animation-duration: 5s; }
 
-        /* Header with Fancier Title */
+        /* Header */
         .header {
             text-align: center;
             padding: 60px 20px;
             background: linear-gradient(to bottom, rgba(26, 26, 46, 0.9), rgba(22, 33, 62, 0.9));
-            position: relative;
             opacity: 0;
             transform: scale(0.8);
             animation: fadeInScale 1.5s ease-out 0.5s forwards;
@@ -114,28 +102,16 @@
             background: linear-gradient(45deg, #00ffff, #ff00ff, #00ffff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: 
-                0 0 10px #00ffff, 
-                0 0 20px #00ffff, 
-                0 0 30px #ff00ff, 
-                0 0 40px #ff00ff;
+            text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #ff00ff, 0 0 40px #ff00ff;
             margin: 0;
             text-transform: uppercase;
             letter-spacing: 8px;
             animation: neonPulse 2s ease-in-out infinite alternate;
-            transition: all 0.3s ease;
         }
-        @keyframes fadeInScale {
-            0% { opacity: 0; transform: scale(0.8); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-        @keyframes neonPulse {
-            0% { text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #ff00ff; }
-            100% { text-shadow: 0 0 15px #00ffff, 0 0 30px #00ffff, 0 0 50px #ff00ff; }
-        }
+        @keyframes fadeInScale { 0% { opacity: 0; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1); } }
+        @keyframes neonPulse { 0% { text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #ff00ff; } 100% { text-shadow: 0 0 15px #00ffff, 0 0 30px #00ffff, 0 0 50px #ff00ff; } }
 
-        /* Navigation with Click-Activated Dropdown */
+        /* Navigation */
         .nav {
             display: flex;
             justify-content: center;
@@ -144,19 +120,22 @@
             opacity: 0;
             transform: translateY(-20px);
             animation: slideIn 0.8s ease-out 1s forwards;
+            z-index: 10;
         }
         .nav a, .nav .dropdown {
             color: #00ffff;
             text-decoration: none;
-            margin: 0 20px;
+            margin: 0 15px;
             font-size: 1.3em;
             font-weight: 600;
             position: relative;
             transition: all 0.3s ease;
             text-shadow: 0 0 5px #00ffff;
             cursor: pointer;
+            padding: 5px 10px;
+            user-select: none;
         }
-        .nav a:hover, .nav .dropdown:hover {
+        .nav a:hover, .nav .dropdown:hover, .nav .active {
             color: #ff00ff;
             text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
         }
@@ -171,7 +150,7 @@
             box-shadow: 0 0 10px #ff00ff;
             transition: all 0.3s ease;
         }
-        .nav a:hover::after, .nav .dropdown:hover::after {
+        .nav a:hover::after, .nav .dropdown:hover::after, .nav .active::after {
             width: 100%;
             left: 0;
         }
@@ -191,11 +170,12 @@
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
             border: 1px solid #00ffff;
             border-radius: 5px;
-            z-index: 1000; /* Ensure it stays above other content */
+            z-index: 1002;
             opacity: 0;
             transform: translateY(-10px);
             transition: opacity 0.3s ease, transform 0.3s ease;
-            overflow: hidden; /* Prevent text overflow */
+            overflow: hidden;
+            background-color: rgba(0, 0, 0, 0.98); /* Stronger opacity to block text */
         }
         .dropdown-content.show {
             display: block;
@@ -209,6 +189,9 @@
             display: block;
             font-size: 1.1em;
             text-shadow: none;
+            cursor: pointer;
+            user-select: none;
+            pointer-events: auto; /* Ensure sub-tabs are clickable */
         }
         .dropdown-content a:hover {
             color: #ff00ff;
@@ -216,14 +199,20 @@
             text-shadow: 0 0 5px #ff00ff;
         }
 
-        /* Content Section */
-        .content {
+        /* Tab Content */
+        .tab-content {
             padding: 60px 20px;
             text-align: center;
             opacity: 0;
             animation: fadeIn 1s ease-out 1.5s forwards;
+            display: none;
+            position: relative;
+            z-index: 0;
         }
-        .content p {
+        .tab-content.active {
+            display: block;
+        }
+        .tab-content p {
             font-size: 1.3em;
             color: #d3d3d3;
             max-width: 900px;
@@ -232,98 +221,120 @@
         }
 
         /* Animations */
-        @keyframes slideIn {
-            0% { opacity: 0; transform: translateY(-20px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeIn {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
-        }
+        @keyframes slideIn { 0% { opacity: 0; transform: translateY(-20px); } 100% { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { 0% { opacity: 0; } 100% { opacity: 1; } }
 
         /* Responsive Design */
         @media (max-width: 768px) {
-            .header h1 {
-                font-size: 2.5em;
-                letter-spacing: 4px;
-            }
-            .nav {
-                flex-direction: column;
-                align-items: center;
-            }
-            .nav a, .nav .dropdown {
-                margin: 10px 0;
-            }
-            .dropdown-content {
-                position: static;
-                width: 100%;
-                box-shadow: none;
-                border: none;
-                border-radius: 0;
-            }
-            .content p {
-                font-size: 1.1em;
-            }
+            .header h1 { font-size: 2.5em; letter-spacing: 4px; }
+            .nav { flex-direction: column; align-items: center; }
+            .nav a, .nav .dropdown { margin: 10px 0; font-size: 1.1em; }
+            .dropdown-content { position: static; width: 100%; box-shadow: none; border: none; border-radius: 0; }
+            .tab-content p { font-size: 1.1em; }
         }
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Dropdown toggle
             const dropdown = document.querySelector('.dropdown');
             const dropdownContent = document.querySelector('.dropdown-content');
-
             if (dropdown && dropdownContent) {
                 dropdown.addEventListener('click', (e) => {
                     e.preventDefault();
+                    e.stopPropagation();
                     dropdownContent.classList.toggle('show');
                 });
 
-                // Close dropdown when clicking outside
+                // Close dropdown on outside click
                 document.addEventListener('click', (e) => {
-                    if (!dropdown.contains(e.target)) {
+                    if (dropdown && !dropdown.contains(e.target)) {
                         dropdownContent.classList.remove('show');
                     }
                 });
             }
+
+            // Tab and sub-tab switching
+            const navItems = document.querySelectorAll('.nav a, .dropdown-content a');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            // Set default active tab
+            if (navItems.length > 0) {
+                navItems[0].classList.add('active');
+                document.getElementById('home').classList.add('active');
+            }
+
+            navItems.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = item.textContent.toLowerCase().replace(' ', '-');
+                    navItems.forEach(i => i.classList.remove('active'));
+                    item.classList.add('active');
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    const targetContent = document.getElementById(targetId);
+                    if (targetContent) {
+                        targetContent.classList.add('active');
+                    }
+                    if (dropdownContent) dropdownContent.classList.remove('show');
+                });
+            });
+
+            // Touch support for mobile
+            navItems.forEach(item => {
+                item.addEventListener('touchend', (e) => {
+                    e.preventDefault();
+                    item.click();
+                }, { passive: false });
+            });
         });
     </script>
 </head>
 <body>
     <div class="background"></div>
     <div class="particles">
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
+        <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+        <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+        <div class="particle"></div><div class="particle"></div><div class="particle"></div>
         <div class="particle"></div>
     </div>
-    <div class="neon-spots"></div>
-    <div class="neon-spots"></div>
-    <div class="neon-spots"></div>
-    <div class="neon-spots"></div>
+    <div class="neon-spots"></div><div class="neon-spots"></div>
+    <div class="neon-spots"></div><div class="neon-spots"></div>
     <div class="header">
-        <h1>ECHO MODDING REBORN</h1>
+        <h1>Echo Modding Reborn</h1>
     </div>
     <div class="nav">
-        <a href="https://www.echomodding.org/home">Home</a>
-        <a href="https://www.echomodding.org/mods">Mods</a>
+        <a href="#">Home</a>
+        <a href="#">Mods</a>
         <div class="dropdown">
             Cracking
             <div class="dropdown-content">
-                <a href="https://www.echomodding.org/checkers">Checkers</a>
-                <a href="https://www.echomodding.org/tutorials">Tutorials</a>
-                <a href="https://www.echomodding.org/cracked-apps">Cracked Applications</a>
+                <a href="#">Checkers</a>
+                <a href="#">Tutorials</a>
+                <a href="#">Cracked Applications</a>
             </div>
         </div>
-        <a href="https://www.echomodding.org/about">About</a>
-        <a href="https://www.echomodding.org/contact">Contact</a>
+        <a href="#">About</a>
+        <a href="#">Contact</a>
     </div>
-    <div class="content">
-        <p>Welcome to Echo Modding Reborn, the cutting-edge frontier of modding innovation. Immerse yourself in a sleek, futuristic world where advanced modifications and cracking techniques redefine possibilities. Explore our vast collection of mods and unlock the power of customization.</p>
+    <div class="tab-content active" id="home">
+        <p>Welcome to Echo Modding Reborn, the cutting-edge frontier of modding innovation. This is the home section.</p>
+    </div>
+    <div class="tab-content" id="mods">
+        <p>Explore our vast collection of mods to enhance your experience. This is the mods section.</p>
+    </div>
+    <div class="tab-content" id="checkers">
+        <p>Learn about our checking tools and features. This is the checkers section under Cracking.</p>
+    </div>
+    <div class="tab-content" id="tutorials">
+        <p>Access detailed tutorials to master modding techniques. This is the tutorials section under Cracking.</p>
+    </div>
+    <div class="tab-content" id="cracked-applications">
+        <p>Discover cracked applications available for download. This is the cracked applications section under Cracking.</p>
+    </div>
+    <div class="tab-content" id="about">
+        <p>Learn more about Echo Modding Reborn and our mission. This is the about section.</p>
+    </div>
+    <div class="tab-content" id="contact">
+        <p>Get in touch with us for support or inquiries. This is the contact section.</p>
     </div>
 </body>
 </html>
