@@ -191,10 +191,11 @@
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
             border: 1px solid #00ffff;
             border-radius: 5px;
-            z-index: 1;
+            z-index: 1000; /* Ensure it stays above other content */
             opacity: 0;
             transform: translateY(-10px);
             transition: opacity 0.3s ease, transform 0.3s ease;
+            overflow: hidden; /* Prevent text overflow */
         }
         .dropdown-content.show {
             display: block;
@@ -270,17 +271,19 @@
             const dropdown = document.querySelector('.dropdown');
             const dropdownContent = document.querySelector('.dropdown-content');
 
-            dropdown.addEventListener('click', (e) => {
-                e.preventDefault();
-                dropdownContent.classList.toggle('show');
-            });
+            if (dropdown && dropdownContent) {
+                dropdown.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    dropdownContent.classList.toggle('show');
+                });
 
-            // Close dropdown when clicking outside
-            document.addEventListener('click', (e) => {
-                if (!dropdown.contains(e.target)) {
-                    dropdownContent.classList.remove('show');
-                }
-            });
+                // Close dropdown when clicking outside
+                document.addEventListener('click', (e) => {
+                    if (!dropdown.contains(e.target)) {
+                        dropdownContent.classList.remove('show');
+                    }
+                });
+            }
         });
     </script>
 </head>
@@ -306,18 +309,18 @@
         <h1>ECHO MODDING REBORN</h1>
     </div>
     <div class="nav">
-        <a href="#home">Home</a>
-        <a href="#mods">Mods</a>
+        <a href="https://example.com/home">Home</a>
+        <a href="https://example.com/mods">Mods</a>
         <div class="dropdown">
             Cracking
             <div class="dropdown-content">
-                <a href="#checkers">Checkers</a>
-                <a href="#tutorials">Tutorials</a>
-                <a href="#cracked-apps">Cracked Applications</a>
+                <a href="https://example.com/checkers">Checkers</a>
+                <a href="https://example.com/tutorials">Tutorials</a>
+                <a href="https://example.com/cracked-apps">Cracked Applications</a>
             </div>
         </div>
-        <a href="#about">About</a>
-        <a href="#contact">Contact</a>
+        <a href="https://example.com/about">About</a>
+        <a href="https://example.com/contact">Contact</a>
     </div>
     <div class="content">
         <p>Welcome to Echo Modding Reborn, the cutting-edge frontier of modding innovation. Immerse yourself in a sleek, futuristic world where advanced modifications and cracking techniques redefine possibilities. Explore our vast collection of mods and unlock the power of customization.</p>
