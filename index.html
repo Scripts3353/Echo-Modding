@@ -1,149 +1,452 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Qstar Cracks</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BlockHost - Host & Build Discord Bots</title>
+
+  <!-- Discord.js for Browser -->
+  <script src="https://unpkg.com/discord.js@14.15.3/self"></script>
+  <!-- Blockly -->
+  <script src="https://unpkg.com/blockly@10.3.1/blockly.min.js"></script>
+
   <style>
+    :root {
+      --bg: #000000;
+      --card: #111111;
+      --accent: #5865F2;
+      --text: #ffffff;
+      --text-dim: #aaaaaa;
+      --border: #333333;
+    }
     body {
-      background: linear-gradient(to bottom, #0a0a23 0%, #1a1a4d 100%);
-      color: #e0e0ff;
-      font-family: 'Orbitron', sans-serif;
-    }
-    .card {
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      background: linear-gradient(145deg, rgba(20, 20, 50, 0.9), rgba(40, 40, 80, 0.9));
-      border: 2px solid #00d4ff;
-      border-radius: 15px;
-      box-shadow: 0 0 20px rgba(0, 212, 255, 0.5), inset 0 0 10px rgba(0, 212, 255, 0.3);
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
       overflow: hidden;
-      position: relative;
     }
-    .card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: radial-gradient(circle at 50% 0%, rgba(0, 212, 255, 0.2), transparent 70%);
-      pointer-events: none;
+    header {
+      background: var(--card);
+      padding: 1.5rem 2rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-    .card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 0 30px rgba(0, 212, 255, 0.8), inset 0 0 15px rgba(0, 212, 255, 0.5);
+    .logo {
+      font-size: 2.2rem;
+      font-weight: 800;
+      background: linear-gradient(90deg, #5865F2, #8b9cff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
-    .download-btn {
-      transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
-      background: #00d4ff;
-      box-shadow: 0 0 12px rgba(0, 212, 255, 0.7);
-      border-radius: 8px;
-      text-transform: uppercase;
+    .btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 0.8rem 1.6rem;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+    .btn:hover { background: #4752c4; }
+    .btn.secondary {
+      background: #2a2a3a;
+    }
+    .btn.secondary:hover { background: #3a3a50; }
+    .btn.danger {
+      background: #e74c3c;
+    }
+
+    main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 2rem;
+    }
+
+    .view { display: none; }
+    .view.active { display: block; }
+
+    .bot-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+    .bot-card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 1.5rem;
+      border: 1px solid var(--border);
+      transition: 0.3s;
+    }
+    .bot-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+    }
+    .bot-card h3 {
+      margin: 0 0 0.5rem 0;
+      color: var(--accent);
+    }
+    .bot-status {
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
       font-weight: bold;
     }
-    .download-btn:hover {
-      background: #33eaff;
-      box-shadow: 0 0 20px rgba(51, 234, 255, 0.9);
-      transform: scale(1.05);
-    }
-    h1 {
-      text-shadow: 0 0 12px rgba(0, 212, 255, 0.8);
-      font-family: 'Orbitron', sans-serif;
-      letter-spacing: 2px;
-    }
-    .card h2 {
-      font-family: 'Orbitron', sans-serif;
-      text-shadow: 0 0 8px rgba(0, 212, 255, 0.6);
-    }
-    .card p {
-      font-family: 'Roboto', sans-serif;
-    }
-    /* Starfield background effect */
-    .starfield {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
+    .status-online { background: #43b581; }
+    .status-offline { background: #747f8d; }
+
+    #editorView {
+      display: grid;
+      grid-template-rows: auto 1fr;
       height: 100%;
-      pointer-events: none;
-      background: transparent;
-      z-index: -1;
     }
-    .star {
-      position: absolute;
-      background: #ffffff;
-      border-radius: 50%;
-      opacity: 0.7;
-      animation: twinkle 3s infinite alternate;
+    #blocklyDiv {
+      height: 100%;
+      width: 100%;
+      background: #000;
     }
-    @keyframes twinkle {
-      0% { opacity: 0.3; }
-      100% { opacity: 0.8; }
+
+    .editor-header {
+      background: var(--card);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .token-input {
+      margin: 1rem 0;
+      padding: 1rem;
+      background: var(--card);
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+    .token-input input {
+      width: 100%;
+      padding: 0.8rem;
+      background: #000;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: white;
+      font-family: monospace;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      background: var(--card);
+      color: var(--text-dim);
+      font-size: 0.9rem;
+      border-top: 1px solid var(--border);
     }
   </style>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Roboto:wght@400&display=swap" rel="stylesheet">
 </head>
-<body class="min-h-screen flex flex-col items-center justify-center p-6 relative">
-  <div class="starfield" id="starfield"></div>
-  <div class="container mx-auto">
-    <h1 class="text-4xl font-bold text-center mb-8 text-white">Game Download Library</h1>
-    <div id="game-library" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      <!-- Game cards will be dynamically inserted here -->
+<body>
+
+  <header>
+    <div class="logo">BlockHost</div>
+    <div>
+      <button class="btn secondary" onclick="showView('menuView')">My Bots</button>
     </div>
-  </div>
+  </header>
+
+  <main>
+
+    <!-- Main Menu View -->
+    <div id="menuView" class="view active">
+      <h1>My Discord Bots</h1>
+      <button class="btn" onclick="createNewBot()">+ Create New Bot</button>
+      <div class="bot-list" id="botList">
+        <!-- Bots loaded here -->
+      </div>
+    </div>
+
+    <!-- Editor View -->
+    <div id="editorView" class="view">
+      <div class="editor-header">
+        <div>
+          <h2 id="botNameDisplay">Editing Bot</h2>
+          <span id="botStatus" class="bot-status status-offline">Offline</span>
+        </div>
+        <div>
+          <button class="btn secondary" onclick="saveBot()">Save</button>
+          <button class="btn" id="runBtn" onclick="toggleBot()">Run Bot</button>
+          <button class="btn secondary" onclick="showView('menuView')">Back</button>
+        </div>
+      </div>
+
+      <div class="token-input">
+        <label><strong>Bot Token (required to run):</strong></label>
+        <input type="password" id="botToken" placeholder="Paste your bot token here (never shared)" />
+        <small>Invite your bot with: <code>https://discord.com/oauth2/authorize?client_id=YOUR_ID&scope=bot&permissions=8</code></small>
+      </div>
+
+      <div id="blocklyDiv"></div>
+    </div>
+
+  </main>
+
+  <footer>
+    BlockHost • Real Discord Bots in Browser • Bots run while tab is open • Data saved in your browser
+  </footer>
+
+  <!-- Toolbox -->
+  <xml xmlns="https://developers.google.com/blockly/xml" id="toolbox" style="display: none">
+    <category name="Events" colour="#4da6ff">
+      <block type="on_ready"></block>
+      <block type="on_message"></block>
+    </category>
+    <category name="Actions" colour="#ff6b6b">
+      <block type="send_message"></block>
+      <block type="reply"></block>
+      <block type="send_embed"></block>
+    </category>
+    <category name="Logic" colour="#48dbfb">
+      <block type="controls_if"></block>
+      <block type="logic_compare"></block>
+      <block type="text_contains"></block>
+    </category>
+    <category name="Text" colour="#ff9ff3">
+      <block type="text"></block>
+      <block type="message_content"></block>
+      <block type="message_author"></block>
+    </category>
+    <category name="Info" colour="#54a0ff">
+      <block type="message_channel"></block>
+    </category>
+  </xml>
 
   <script>
-    // Sample game data (you can expand this or fetch from an API)
-    const games = [
-      {
-        title: "Garden Of BanBan 8",
-        description: "",
-        image: "https://static.wikia.nocookie.net/a108fd96-c3a0-411f-b50f-baf551c2c952",
-        downloadLink: "https://example.com/downloads/space-adventure.zip",
-        size: "841 MB"
-      },
-    ];
+    let workspace = null;
+    let currentBotId = null;
+    let client = null;
+    let isRunning = false;
 
-    // Function to create game cards
-    function renderGameCards() {
-      const library = document.getElementById('game-library');
-      games.forEach(game => {
-        const card = document.createElement('div');
-        card.className = 'card rounded-lg shadow-md overflow-hidden';
-        card.innerHTML = `
-          <img src="${game.image}" alt="${game.title}" class="w-full h-40 object-cover">
-          <div class="p-4 relative z-10">
-            <h2 class="text-xl font-semibold text-white">${game.title}</h2>
-            <p class="text-gray-300 mt-2">${game.description}</p>
-            <p class="text-gray-400 mt-2">File Size: ${game.size}</p>
-            <a href="${game.downloadLink}" class="download-btn inline-block mt-4 px-4 py-2 text-white rounded">Download Now</a>
-          </div>
-        `;
-        library.appendChild(card);
+    const bots = JSON.parse(localStorage.getItem('blockhost_bots') || '{}');
+
+    // Custom Blocks
+    Blockly.Blocks['on_ready'] = {
+      init: function() {
+        this.appendDummyInput().appendField("When bot is ready");
+        this.appendStatementInput("DO").appendField("do");
+        this.setColour(100);
+      }
+    };
+
+    Blockly.Blocks['on_message'] = {
+      init: function() {
+        this.appendDummyInput().appendField("When message received");
+        this.appendStatementInput("DO").appendField("do");
+        this.setColour(100);
+      }
+    };
+
+    Blockly.Blocks['send_message'] = {
+      init: function() {
+        this.appendValueInput("CHANNEL").appendField("Send to channel");
+        this.appendValueInput("TEXT").setCheck("String").appendField("message");
+        this.setPreviousStatement(true);
+        this.setNextStatement(true);
+        this.setColour(160);
+      }
+    };
+
+    Blockly.Blocks['reply'] = {
+      init: function() {
+        this.appendValueInput("TEXT").setCheck("String").appendField("Reply with");
+        this.setPreviousStatement(true);
+        this.setNextStatement(true);
+        this.setColour(160);
+      }
+    };
+
+    Blockly.Blocks['send_embed'] = {
+      init: function() {
+        this.appendValueInput("CHANNEL").appendField("Send embed to");
+        this.appendValueInput("TITLE").setCheck("String").appendField("title");
+        this.appendValueInput("DESC").setCheck("String").appendField("description");
+        this.setPreviousStatement(true);
+        this.setNextStatement(true);
+        this.setColour(200);
+      }
+    };
+
+    Blockly.Blocks['message_content'] = {
+      init: function() { this.appendDummyInput().appendField("message content"); this.setOutput(true, "String"); this.setColour(210); }
+    };
+
+    Blockly.Blocks['message_author'] = {
+      init: function() { this.appendDummyInput().appendField("author tag"); this.setOutput(true, "String"); this.setColour(210); }
+    };
+
+    Blockly.Blocks['message_channel'] = {
+      init: function() { this.appendDummyInput().appendField("channel"); this.setOutput(true); this.setColour(210); }
+    };
+
+    Blockly.Blocks['text_contains'] = {
+      init: function() {
+        this.appendValueInput("TEXT").setCheck("String").appendField("text");
+        this.appendValueInput("WORD").setCheck("String").appendField("contains");
+        this.setOutput(true, "Boolean");
+        this.setColour(210);
+      }
+    };
+
+    // Initialize Blockly
+    function initBlockly() {
+      if (workspace) workspace.dispose();
+      workspace = Blockly.inject('blocklyDiv', {
+        toolbox: document.getElementById('toolbox'),
+        theme: Blockly.Themes.Dark,
+        grid: { spacing: 20, length: 3, colour: '#222', snap: true },
+        zoom: { controls: true, wheel: true },
+        move: { scrollbars: true, drag: true, wheel: true },
       });
     }
 
-    // Create starfield effect
-    function createStarfield() {
-      const starfield = document.getElementById('starfield');
-      for (let i = 0; i < 100; i++) {
-        const star = document.createElement('div');
-        star.className = 'star';
-        star.style.width = `${Math.random() * 2 + 1}px`;
-        star.style.height = star.style.width;
-        star.style.left = `${Math.random() * 100}%`;
-        star.style.top = `${Math.random() * 100}%`;
-        star.style.animationDelay = `${Math.random() * 3}s`;
-        starfield.appendChild(star);
+    // Views
+    function showView(viewId) {
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      document.getElementById(viewId).classList.add('active');
+      if (viewId === 'editorView') initBlockly();
+    }
+
+    // Bot Management
+    function createNewBot() {
+      const name = prompt("Bot Name:");
+      if (!name) return;
+      const id = Date.now().toString();
+      bots[id] = { name, xml: '', token: '' };
+      saveBots();
+      editBot(id);
+    }
+
+    function editBot(id) {
+      currentBotId = id;
+      const bot = bots[id];
+      document.getElementById('botNameDisplay').textContent = bot.name;
+      document.getElementById('botToken').value = bot.token || '';
+      showView('editorView');
+
+      initBlockly();
+      if (bot.xml) {
+        const xml = Blockly.Xml.textToDom(bot.xml);
+        workspace.clear();
+        Blockly.Xml.domToWorkspace(xml, workspace);
+      } else {
+        workspace.clear();
+      }
+      updateBotStatus();
+    }
+
+    function saveBot() {
+      if (!currentBotId) return;
+      const xml = Blockly.Xml.workspaceToDom(workspace);
+      const xmlText = Blockly.Xml.domToText(xml);
+      bots[currentBotId].xml = xmlText;
+      bots[currentBotId].token = document.getElementById('botToken').value;
+      saveBots();
+      alert("Bot saved!");
+      renderBotList();
+    }
+
+    function saveBots() {
+      localStorage.setItem('blockhost_bots', JSON.stringify(bots));
+    }
+
+    function renderBotList() {
+      const list = document.getElementById('botList');
+      list.innerHTML = '';
+      Object.keys(bots).forEach(id => {
+        const bot = bots[id];
+        const card = document.createElement('div');
+        card.className = 'bot-card';
+        card.innerHTML = `
+          <h3>${bot.name}</h3>
+          <p>Click to edit • Last saved: ${new Date().toLocaleString()}</p>
+          <div style="margin-top:1rem">
+            <button class="btn" onclick="editBot('${id}')">Edit</button>
+            <button class="btn danger" onclick="deleteBot('${id}')">Delete</button>
+          </div>
+        `;
+        list.appendChild(card);
+      });
+    }
+
+    function deleteBot(id) {
+      if (confirm("Delete this bot?")) {
+        delete bots[id];
+        saveBots();
+        renderBotList();
       }
     }
 
-    // Render cards and starfield on page load
-    document.addEventListener('DOMContentLoaded', () => {
-      renderGameCards();
-      createStarfield();
-    });
+    // Run Bot
+    async function toggleBot() {
+      if (isRunning) {
+        if (client) client.destroy();
+        isRunning = false;
+        document.getElementById('runBtn').textContent = 'Run Bot';
+        document.getElementById('botStatus').textContent = 'Offline';
+        document.getElementById('botStatus').className = 'bot-status status-offline';
+        return;
+      }
+
+      const token = document.getElementById('botToken').value.trim();
+      if (!token) {
+        alert("Please enter your bot token!");
+        return;
+      }
+
+      document.getElementById('runBtn').textContent = 'Stop Bot';
+      document.getElementById('botStatus').textContent = 'Connecting...';
+
+      try {
+        client = new Discord.Client({
+          intents: ["Guilds", "GuildMessages", "MessageContent"]
+        });
+
+        client.on('ready', () => {
+          console.log(`Bot logged in as ${client.user.tag}`);
+          document.getElementById('botStatus').textContent = 'Online';
+          document.getElementById('botStatus').className = 'bot-status status-online';
+        });
+
+        client.on('messageCreate', async (message) => {
+          if (message.author.bot) return;
+          // Execute block logic here (simplified example)
+          // In real implementation: interpret blocks into runtime actions
+          // For now: simple ping-pong demo
+          if (message.content.toLowerCase() === 'ping') {
+            await message.reply('Pong!');
+          }
+        });
+
+        await client.login(token);
+        isRunning = true;
+      } catch (err) {
+        alert("Invalid token or error: " + err.message);
+        document.getElementById('runBtn').textContent = 'Run Bot';
+        document.getElementById('botStatus').textContent = 'Offline';
+        document.getElementById('botStatus').className = 'bot-status status-offline';
+      }
+    }
+
+    function updateBotStatus() {
+      document.getElementById('botStatus').textContent = isRunning ? 'Online' : 'Offline';
+      document.getElementById('botStatus').className = `bot-status ${isRunning ? 'status-online' : 'status-offline'}`;
+    }
+
+    // Load bots on start
+    renderBotList();
   </script>
 </body>
 </html>
